@@ -1,0 +1,196 @@
+<div class="landing-container">
+    <div class="progressBar d-flex align-items-center py-2 px-5">
+        <div class="main-circle d-flex align-items-center justify-content-center me-3"
+            [ngStyle]="{ background: getProgressGradient() }">
+            <div class="second-circle">
+                {{ currentStep }} of {{ totalSteps }}
+            </div>
+        </div>
+
+        <div class="progress-text">
+            <p class="current-page-name">{{currentPageText}}</p>
+            <p class="next-page-name">Next: {{nextPageText}}</p>
+        </div>
+    </div>
+
+    <div class="stepper-form py-2 px-5">
+
+        @if(currentStep === 1){
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <form>
+                        <div class="mt-4">
+                            <h5 class="fw-bold m-0">1.Enter FPN Number</h5>
+                            <p>Pay a fixed penalty notice online</p>
+                        </div>
+
+                        <div class="mb-3 mt-3">
+                            <h6 class="m-0 form-label">Fixed Penalty Notice</h6>
+                            <label class="">FPN Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-input-fields" placeholder="e.g., 44332234443"
+                                [(ngModel)]="formData.fpnNumber" name="fpnNumber" required />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-continue w-100"
+                                    (click)="nextStep('Confirm Details', 'Payment Details')">Continue</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-continue w-100"
+                                    (click)="resetForm()">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        }
+        @if(currentStep === 2){
+        <!-- Step 2: Confirm Your Details -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="mt-4">
+                        <h5 class="fw-bold">2. Confirm your details below</h5>
+                    </div>
+
+                    <div class="p-1 mt-1">
+                        <p><strong>Reference:</strong> 360237983</p>
+                        <p><strong>Issued at:</strong> 08-Sept-24 at 16:50</p>
+                        <p><strong>Offence:</strong> Litter Dep (Cigarette)</p>
+                        <p><strong>Amount:</strong> £80.00</p>
+                        <p><strong>Description:</strong> Dropped cigarette and walked away</p>
+                        <p><strong>Area:</strong> Bloomsbury Ward</p>
+                        <p><strong>Alleged Offender Details:</strong> Xyz </p>
+                    </div>
+
+                    <div class="row mt-1 pb-3">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-continue w-100"
+                                (click)="prevStep('Enter FPN', 'Confirm Details')">Back</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-continue w-100"
+                                (click)="nextStep('Payment Details', 'Confirmation')">Continue to payment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+
+        @if(currentStep === 3){
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="mt-4">
+                        <div class="mt-4">
+                            <h5 class="fw-bold m-0">1.Payment Details</h5>
+                            <p>Fixed penalty notices ready for payment.</p>
+                        </div>
+                        <div class="mt-4">
+                            <h5 class="fw-bold m-0">Pay by credit or debit card:</h5>
+                            <p class="mb-0">Please double check your payment details.</p>
+                            <p>A reciept will be emailed, please check your inbox and junk folder.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">First Name(s) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-input-fields" name="fname"
+                            [(ngModel)]="formData.fname" placeholder="First Name*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Last Name(s) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-input-fields" name="lname"
+                            [(ngModel)]="formData.lname" placeholder="Last Name*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Address Line <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-input-fields" name="address1"
+                            [(ngModel)]="formData.address1" placeholder="Address Line 1*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-input-fields" name="address2"
+                            [(ngModel)]="formData.address2" placeholder="Address Line 2">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-input-fields" name="city"
+                            [(ngModel)]="formData.city" placeholder="City*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-input-fields" name="postcode"
+                            [(ngModel)]="formData.postcode" placeholder="Postcode*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-input-fields" name="country"
+                            [(ngModel)]="formData.country" placeholder="Country*">
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-input-fields" name="phone"
+                            [(ngModel)]="formData.phone" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control form-input-fields" name="email"
+                            [(ngModel)]="formData.email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control form-input-fields" name="confirmEmail"
+                            [(ngModel)]="formData.confirmEmail" required>
+                    </div>
+                    <div class="mt-4">
+                        <table class="table table-bordered amount-table">
+                            <thead >
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Amount Due</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>360237983</td>
+                                    <td>£80.00</td>
+                                </tr>
+                                <tr>
+                                    <td> <strong>Total </strong></td>
+                                    <td><strong> £80.00</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4 pb-3">
+                <div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+                  <button type="button" class="btn btn-continue w-100 w-md-auto">Pay Securely</button>
+                  <button type="button" class="btn btn-continue w-100 w-md-auto"
+                    (click)="prevStep('Enter FPN', 'Confirm Details')">Cancel</button>
+                </div>
+              </div>
+              
+        </form>
+        }
+    </div>
+</div>
