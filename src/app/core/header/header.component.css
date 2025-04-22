@@ -1,0 +1,27 @@
+.navbar {
+    background-color: var(--primary-color);
+    height: 90px;
+  }
+  
+  .navbar-logo-left img {
+    display: block;
+    max-height: 40px;
+  }
+  
+  .navbar-logo-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-lang-toggle a {
+    font-size: 14px;
+    color: var(--secondary-color);
+  }
+  
+  .navbar .container-fluid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  
