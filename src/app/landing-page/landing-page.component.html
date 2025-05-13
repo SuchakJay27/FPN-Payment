@@ -1,196 +1,288 @@
 <div class="landing-container">
-    <div class="progressBar d-flex align-items-center py-2 px-5">
-        <div class="main-circle d-flex align-items-center justify-content-center me-3"
-            [ngStyle]="{ background: getProgressGradient() }">
-            <div class="second-circle">
-                {{ currentStep }} of {{ totalSteps }}
-            </div>
-        </div>
-
-        <div class="progress-text">
-            <p class="current-page-name">{{currentPageText}}</p>
-            <p class="next-page-name">Next: {{nextPageText}}</p>
-        </div>
+  <div class="progressbar d-flex flex-row align-items-center" role="progressbar" [attr.aria-valuenow]="currentStep"
+    aria-valuemin="1" [attr.aria-valuemax]="totalSteps" aria-label="Form step progress">
+    <div class="main-circle d-flex align-items-center justify-content-center order-2 order-md-1 me-0 me-md-3"
+      [ngStyle]="{ background: getProgressGradient() }" aria-hidden="true">
+      <div class="second-circle" aria-hidden="true">
+        {{ currentStep }} of {{ totalSteps }}
+      </div>
     </div>
 
-    <div class="stepper-form py-2 px-5">
+    <!-- Text description of progress -->
+    <div class="progress-text order-1 order-md-2 ms-0 ms-md-3" aria-labelledby="current-step-text next-step-text">
+      <p class="current-page-name" id="current-step-text">{{ currentPageText }}</p>
+      <p class="next-page-name" id="next-step-text">Next: {{ nextPageText }}</p>
+    </div>
 
-        @if(currentStep === 1){
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-6">
-                    <form>
-                        <div class="mt-4">
-                            <h5 class="fw-bold m-0">1.Enter FPN Number</h5>
-                            <p>Pay a fixed penalty notice online</p>
-                        </div>
+  </div>
 
-                        <div class="mb-3 mt-3">
-                            <h6 class="m-0 form-label">Fixed Penalty Notice</h6>
-                            <label class="">FPN Number <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-input-fields" placeholder="e.g., 44332234443"
-                                [(ngModel)]="formData.fpnNumber" name="fpnNumber" required />
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button type="button" class="btn btn-continue w-100"
-                                    (click)="nextStep('Confirm Details', 'Payment Details')">Continue</button>
-                            </div>
-                            <div class="col-md-6">
-                                <button type="button" class="btn btn-continue w-100"
-                                    (click)="resetForm()">Reset</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+  <div class="stepper-form">
+    @if(currentStep === 1){
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <form role="form" aria-labelledby="step1-title">
+            <div class="mt-4">
+              <h5 class="fw-bold m-0" id="step1-title">1.{{ 'FPN_REQUIRED' | translate }}</h5>
+              <p>{{ 'FPN_DESCRIPTION' | translate }}</p>
             </div>
-        </div>
-        }
-        @if(currentStep === 2){
-        <!-- Step 2: Confirm Your Details -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-6">
-                    <div class="mt-4">
-                        <h5 class="fw-bold">2. Confirm your details below</h5>
-                    </div>
 
-                    <div class="p-1 mt-1">
-                        <p><strong>Reference:</strong> 360237983</p>
-                        <p><strong>Issued at:</strong> 08-Sept-24 at 16:50</p>
-                        <p><strong>Offence:</strong> Litter Dep (Cigarette)</p>
-                        <p><strong>Amount:</strong> £80.00</p>
-                        <p><strong>Description:</strong> Dropped cigarette and walked away</p>
-                        <p><strong>Area:</strong> Bloomsbury Ward</p>
-                        <p><strong>Alleged Offender Details:</strong> Xyz </p>
-                    </div>
-
-                    <div class="row mt-1 pb-3">
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-continue w-100"
-                                (click)="prevStep('Enter FPN', 'Confirm Details')">Back</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-continue w-100"
-                                (click)="nextStep('Payment Details', 'Confirmation')">Continue to payment</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="mb-0 mt-3">
+              <h6 class="m-0 form-label">{{ 'FIXED_PENALTY_NOTICE' | translate }}</h6>
+              <label for="fpnNumber">{{ 'FPN_NUMBER' | translate }}<span class="text-danger">*</span></label>
+              <input type="text" id="fpnNumber" class="form-control form-input-fields" placeholder="e.g., 44332234443"
+                [(ngModel)]="formData.fpnNumber" name="fpnNumber" required inputmode="numeric" pattern="[0-9]*"
+                [attr.aria-invalid]="!formData.fpnNumber && isFPNNumber === false" aria-describedby="fpnError"
+                (keypress)="allowOnlyNumbers($event)" />
+              @if(!formData.fpnNumber && isFPNNumber == false){
+              <span id="fpnError" class="text-danger mt-1" role="alert">
+                {{ 'FPN_REQUIRED' | translate }}
+              </span>
+              }
             </div>
-        </div>
-        }
 
-        @if(currentStep === 3){
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-6">
-                    <div class="mt-4">
-                        <div class="mt-4">
-                            <h5 class="fw-bold m-0">1.Payment Details</h5>
-                            <p>Fixed penalty notices ready for payment.</p>
-                        </div>
-                        <div class="mt-4">
-                            <h5 class="fw-bold m-0">Pay by credit or debit card:</h5>
-                            <p class="mb-0">Please double check your payment details.</p>
-                            <p>A reciept will be emailed, please check your inbox and junk folder.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <form>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">First Name(s) <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-input-fields" name="fname"
-                            [(ngModel)]="formData.fname" placeholder="First Name*" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Last Name(s) <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-input-fields" name="lname"
-                            [(ngModel)]="formData.lname" placeholder="Last Name*" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Address Line <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-input-fields" name="address1"
-                            [(ngModel)]="formData.address1" placeholder="Address Line 1*" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <input type="text" class="form-control form-input-fields" name="address2"
-                            [(ngModel)]="formData.address2" placeholder="Address Line 2">
-                    </div>
-
-                    <div class="mb-3">
-                        <input type="text" class="form-control form-input-fields" name="city"
-                            [(ngModel)]="formData.city" placeholder="City*" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <input type="text" class="form-control form-input-fields" name="postcode"
-                            [(ngModel)]="formData.postcode" placeholder="Postcode*" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <input type="text" class="form-control form-input-fields" name="country"
-                            [(ngModel)]="formData.country" placeholder="Country*">
-                    </div>
-                </div>
-
-                <!-- Right Column -->
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Phone Number <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-input-fields" name="phone"
-                            [(ngModel)]="formData.phone" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control form-input-fields" name="email"
-                            [(ngModel)]="formData.email" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Confirm Email Address <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control form-input-fields" name="confirmEmail"
-                            [(ngModel)]="formData.confirmEmail" required>
-                    </div>
-                    <div class="mt-4">
-                        <table class="table table-bordered amount-table">
-                            <thead >
-                                <tr>
-                                    <th>Reference</th>
-                                    <th>Amount Due</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>360237983</td>
-                                    <td>£80.00</td>
-                                </tr>
-                                <tr>
-                                    <td> <strong>Total </strong></td>
-                                    <td><strong> £80.00</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-4 pb-3">
-                <div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
-                  <button type="button" class="btn btn-continue w-100 w-md-auto">Pay Securely</button>
-                  <button type="button" class="btn btn-continue w-100 w-md-auto"
-                    (click)="prevStep('Enter FPN', 'Confirm Details')">Cancel</button>
-                </div>
+              <div class="col-md-6">
+                <button type="button" class="btn btn-continue w-100"
+                  (click)="validateAndNext('CONFIRMDETAIL', 'PAYMENTDETAILS')"
+                  aria-label="Continue to payment details">Continue</button>
               </div>
-              
-        </form>
-        }
+              <div class="col-md-6">
+                <button type="button" class="btn btn-continue w-100" (click)="resetForm()"
+                  aria-label="Reset form">Reset</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+    }
+    @if(currentStep === 2){
+    <!-- Step 2: Confirm Your Details -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <div class="mt-4">
+            <h5 class="fw-bold" id="confirmStepTitle">2.{{ 'CONFIRMDETAILS' | translate }}</h5>
+          </div>
+
+          <div class="p-1 mt-1" role="region" aria-labelledby="confirmStepTitle">
+            <p><strong>{{ 'REFERENCE' | translate }}:</strong> 360237983</p>
+            <p><strong>{{ 'ISSUED_AT' | translate }}:</strong> 08-Sept-24 at 16:50</p>
+            <p><strong>{{ 'ISSUED_AT' | translate }}:</strong> {{ 'LITTERDEP' | translate }} ({{ 'CIGARETTE' | translate
+              }})</p>
+            <p><strong>{{ 'AMOUNT' | translate }}:</strong> £80.00</p>
+            <p><strong>{{ 'DESCRIPTION' | translate }}:</strong> Dropped cigarette and walked away</p>
+            <p><strong>{{ 'AREA' | translate }}:</strong> Bloomsbury Ward</p>
+            <p><strong>{{ 'ALLEGED_OFFENDER_DETAILS' | translate }}:</strong> Xyz </p>
+          </div>
+
+          <div class="row mt-1 pb-3">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-continue w-100" (click)="prevStep('ENTERFPN', 'CONFIRMDETAIL')"
+                aria-label="Go back to enter FPN details">Back</button>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-continue w-100" (click)="nextStep('PAYMENTDETAILS', 'CONFIRMATION')"
+                aria-label="Continue to payment details">Continue to payment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    @if(currentStep === 3){
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <div class="mt-4">
+            <div class="mt-4">
+              <h5 class="fw-bold m-0" id="paymentDetailsTitle">3.{{ 'PAYMENT_DETAILS' | translate }}</h5>
+              <p>{{ 'PAYMENT_READY' | translate }}</p>
+            </div>
+            <div class="mt-4">
+              <h5 class="fw-bold m-0">{{ 'PAY_BY_CARD' | translate }}:</h5>
+              <p class="mb-0">{{ 'PAYMENT_CHECK' | translate }}</p>
+              <p>{{ 'EMAIL_RECEIPT' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form #paymentForm="ngForm" aria-labelledby="paymentDetailsTitle">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3 position-relative">
+            <label for="fname" class="form-label">{{ 'FIRST_NAME' | translate }} <span
+                class="text-danger">*</span></label>
+            <input type="text" id="fname" class="form-control form-input-fields" name="fname"
+              [(ngModel)]="formData.fname" #fname="ngModel" required
+              [placeholder]="'PLACEHOLDER_FIRST_NAME' | translate" [class.is-invalid]="fname.invalid && fname.touched"
+              aria-required="true" aria-describedby="fnameError">
+            <!-- @if(fname.invalid && fname.touched){
+              <div id="fnameError" class="invalid-feedback">
+            {{ 'FIRST_NAME_REQUIRED' | translate }}
+          </div>
+        } -->
+          </div>
+
+          <div class="mb-3 position-relative">
+            <label for="lname" class="form-label">{{ 'LAST_NAME' | translate }} <span
+                class="text-danger">*</span></label>
+            <input type="text" id="lname" class="form-control form-input-fields" name="lname"
+              [(ngModel)]="formData.lname" #lname="ngModel" required [placeholder]="'PLACEHOLDER_LAST_NAME' | translate"
+              [class.is-invalid]="lname.invalid && lname.touched" aria-required="true" aria-describedby="lnameError">
+            <!-- @if(lname.invalid && lname.touched){
+              <div id="lnameError" class="invalid-feedback">
+            {{ 'LAST_NAME_REQUIRED' | translate }}
+          </div>
+        } -->
+          </div>
+
+
+          <div class="mb-3 position-relative">
+            <label for="address1" class="form-label">{{ 'ADDRESS_LINE1' | translate }} <span
+                class="text-danger">*</span></label>
+            <input type="text" id="address1" class="form-control form-input-fields" name="address1"
+              [(ngModel)]="formData.address1" #address1="ngModel" required
+              [placeholder]="'PLACEHOLDER_ADDRESS_LINE1' | translate"
+              [class.is-invalid]="address1.invalid && address1.touched" aria-required="true"
+              aria-describedby="address1Error">
+            <!-- @if(address1.invalid && address1.touched){
+              <div id="address1Error" class="invalid-feedback">
+                {{ 'ADDRESS_LINE1_REQUIRED' | translate }}
+              </div>
+            } -->
+          </div>
+
+          <div class="mb-3">
+            <input type="text" class="form-control form-input-fields" name="address2" [(ngModel)]="formData.address2"
+              #address2="ngModel" required [placeholder]="'PLACEHOLDER_ADDRESS_LINE2' | translate"
+              [class.is-invalid]="address2.invalid && address2.touched" aria-required="true"
+              aria-describedby="address2Error">
+            <!-- @if(address2.invalid && address2.touched){
+            <div id="address2Error" class="invalid-feedback">
+              {{ 'ADDRESS_LINE2_REQUIRED' | translate }}
+            </div>
+            } -->
+          </div>
+
+          <div class="mb-3 position-relative">
+            <input type="text" class="form-control form-input-fields" name="city" [(ngModel)]="formData.city"
+              #city="ngModel" required [placeholder]="'PLACEHOLDER_CITY' | translate"
+              [class.is-invalid]="city.invalid && city.touched" aria-required="true" aria-describedby="cityError">
+            <!-- @if(city.invalid && city.touched){
+              <div id="cityError" class="invalid-feedback">
+                {{ 'CITY_REQUIRED' | translate }}
+              </div>
+            } -->
+          </div>
+
+          <div class="mb-3 position-relative">
+            <input type="text" class="form-control form-input-fields" name="postcode" [(ngModel)]="formData.postcode"
+              #postcode="ngModel" required [placeholder]="'PLACEHOLDER_POSTCODE' | translate"
+              [class.is-invalid]="postcode.invalid && postcode.touched" aria-required="true"
+              aria-describedby="postcodeError">
+            <!-- @if(postcode.invalid && postcode.touched){
+              <div id="postcodeError" class="invalid-feedback">
+                {{ 'POSTCODE_REQUIRED' | translate }}
+              </div>
+            } -->
+          </div>
+
+          <div class="mb-3">
+            <input type="text" class="form-control form-input-fields" name="country" [(ngModel)]="formData.country"
+              #country="ngModel" required [placeholder]="'PLACEHOLDER_COUNTRY' | translate"
+              [class.is-invalid]="country.invalid && country.touched" aria-required="true"
+              aria-describedby="countryError">
+            <!-- @if(country.invalid && country.touched){
+              <div  id="countryError" class="invalid-feedback">
+                {{ 'COUNTRY_REQUIRED' | translate }}
+              </div>
+            } -->
+          </div>
+
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3 position-relative">
+            <label for="phone" class="form-label">{{ 'PHONE' | translate }} <span class="text-danger">*</span></label>
+            <input type="text" id="phone" class="form-control form-input-fields" name="phone"
+              [(ngModel)]="formData.phone" #phone="ngModel" required inputmode="numeric" pattern="[0-9]*"
+              [placeholder]="'PLACEHOLDER_PHONE' | translate" [class.is-invalid]="phone.invalid && phone.touched"
+              aria-required="true" aria-describedby="phoneError" (keypress)="allowOnlyNumbers($event)">
+            <!-- @if(phone.invalid && phone.touched){
+              <div  id="phoneError" class="invalid-feedback">
+                {{ 'PHONE_REQUIRED' | translate }}
+              </div>
+            } -->
+          </div>
+
+          <div class="mb-3 position-relative">
+            <label for="email" class="form-label">{{ 'EMAIL' | translate }} <span class="text-danger">*</span></label>
+            <input type="email" id="email" class="form-control form-input-fields" name="email"
+              [(ngModel)]="formData.email" #email="ngModel" required [placeholder]="'PLACEHOLDER_EMAIL' | translate"
+              [class.is-invalid]="!isValidEmail(formData.email) && email.touched" aria-required="true"
+              aria-describedby="emailError">
+            <!-- @if(email.invalid && email.touched){
+              <div  id="emailError" class="invalid-feedback">
+                {{ 'EMAIL_REQUIRED' | translate }}
+              </div>
+            } -->
+          </div>
+
+          <div class="mb-3 position-relative">
+            <label for="confirmEmail" class="form-label">{{ 'CONFIRM_EMAIL' | translate }} <span
+                class="text-danger">*</span></label>
+            <input type="email" id="confirmEmail" class="form-control form-input-fields"
+              [placeholder]="'PLACEHOLDER_CONFIRM_EMAIL' | translate" name="confirmEmail"
+              [(ngModel)]="formData.confirmEmail" #confirmEmail="ngModel" required [class.is-invalid]="(confirmEmail.invalid && confirmEmail.touched) || 
+              (formData.confirmEmail && formData.email !== formData.confirmEmail)" aria-required="true"
+              aria-describedby="confirmEmailError">
+            <!-- @if(confirmEmail.invalid && confirmEmail.touched){
+              <div id="confirmEmailError" class="invalid-feedback">
+                {{ 'CONFIRM_EMAIL_REQUIRED' | translate }}
+              </div>
+            } -->
+          </div>
+
+          <div class="mt-4">
+            <table class="table table-bordered amount-table">
+              <thead>
+                <tr>
+                  <th>{{ 'REFERENCE' | translate }}</th>
+                  <th>{{ 'AMOUNT_DUE' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>360237983</td>
+                  <td>£80.00</td>
+                </tr>
+                <tr>
+                  <td><strong>{{ 'TOTAL' | translate }}</strong></td>
+                  <td><strong>£80.00</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4 pb-3">
+        <div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+          <button type="button" class="btn btn-continue w-100 w-md-auto" (click)="PaySecurely(paymentForm)"
+            aria-label="Pay securely">
+            Pay Securely
+          </button>
+          <button type="button" class="btn btn-continue w-100 w-md-auto"
+            (click)="prevStep('CONFIRMDETAIL', 'PAYMENTDETAILS')" aria-label="Cancel and go back">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+    }
+  </div>
 </div>

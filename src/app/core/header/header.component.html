@@ -7,7 +7,7 @@
       </div>
   
       <div class="navbar-lang-toggle">
-        <a href="">ENG / CY</a>
+        <a role="button" (click)="ChangeLang()" (keydown.enter)="ChangeLang()" aria-label="Change Language" tabindex="0">{{ getToggleLangLabel() }}</a>
       </div>
     </div>
   </nav>
