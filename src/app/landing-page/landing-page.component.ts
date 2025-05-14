@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
   styleUrl: './landing-page.component.css',
 })
 export class LandingPageComponent {
+  //#region private Variables
   currentStep = 1;
   totalSteps = 4;
   currentPageText = "";
@@ -32,7 +33,9 @@ export class LandingPageComponent {
   };
   currentLang: string;
   langChangeSub: Subscription
+  //#endregion
 
+  //#region Constructor
   constructor(private translate: TranslateService) {
     const savedLang = localStorage.getItem('appLang') || 'en';
     this.currentLang = savedLang;
@@ -42,7 +45,9 @@ export class LandingPageComponent {
       this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
     });
   }
+  //#endregion
 
+  //#region Private Methods
   getProgressGradient(): string {
     const percent = (this.currentStep / this.totalSteps) * 100;
     return `conic-gradient(var(--secondary-color) 0% ${percent}%, var(--white) ${percent}% 100%)`;
@@ -109,6 +114,7 @@ export class LandingPageComponent {
       return;
     }
   }
+  //#endregion 
 
 
 }
