@@ -1,8 +1,11 @@
 import { Routes } from '@angular/router';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export const routes: Routes =  [
-    { path: 'landing-page', component: LandingPageComponent }, 
-    { path: '', redirectTo: '/landing-page', pathMatch: 'full' }
+  { path: '', component: LandingPageComponent },
+  { path: '404', component: NotFoundComponent },
+  { path: ':city', component: LandingPageComponent },
+  { path: '**', redirectTo: '404' }
   ];
   

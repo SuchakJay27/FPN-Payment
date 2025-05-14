@@ -13,4 +13,5 @@
 .footer img {
   display: block;
   max-height: 40px;
+  background: var(--white);
 }
