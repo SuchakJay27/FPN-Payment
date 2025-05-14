@@ -23,17 +23,18 @@
         <div class="col-md-6">
           <form role="form" aria-labelledby="step1-title">
             <div class="mt-4">
-              <h5 class="fw-bold m-0" id="step1-title">1.{{ 'FPN_REQUIRED' | translate }}</h5>
-              <p>{{ 'FPN_DESCRIPTION' | translate }}</p>
+              <h2 class="m-0 fpnheaderext" id="step1-title">1.{{ 'FPN_REQUIRED' | translate }}</h2>
+              <p class="fpndescriptiontext mt-2">{{ 'FPN_DESCRIPTION' | translate }}</p>
             </div>
 
             <div class="mb-0 mt-3">
-              <h6 class="m-0 form-label">{{ 'FIXED_PENALTY_NOTICE' | translate }}</h6>
-              <label for="fpnNumber">{{ 'FPN_NUMBER' | translate }}<span class="text-danger">*</span></label>
-              <input type="text" id="fpnNumber" class="form-control form-input-fields" placeholder="e.g., 44332234443"
-                [(ngModel)]="formData.fpnNumber" name="fpnNumber" required inputmode="numeric" pattern="[0-9]*"
-                [attr.aria-invalid]="!formData.fpnNumber && isFPNNumber === false" aria-describedby="fpnError"
-                (keypress)="allowOnlyNumbers($event)" />
+              <h3 class="m-0 fpnheaderext">{{ 'FIXED_PENALTY_NOTICE' | translate }}</h3>
+              <label class="mt-2" for="fpnNumber">{{ 'FPN_NUMBER' | translate }}<span class="text-danger">
+                  *</span></label>
+              <input type="text" id="fpnNumber" class="form-control form-input-fields mt-2 my-1"
+                placeholder="e.g. 44332234443" [(ngModel)]="formData.fpnNumber" name="fpnNumber" required
+                inputmode="numeric" pattern="[0-9]*" [attr.aria-invalid]="!formData.fpnNumber && isFPNNumber === false"
+                aria-describedby="fpnError" (keypress)="allowOnlyNumbers($event)" />
               @if(!formData.fpnNumber && isFPNNumber == false){
               <span id="fpnError" class="text-danger mt-1" role="alert">
                 {{ 'FPN_REQUIRED' | translate }}
@@ -192,10 +193,13 @@
           </div>
 
           <div class="mb-3">
-            <input type="text" class="form-control form-input-fields" name="country" [(ngModel)]="formData.country"
-              #country="ngModel" required [placeholder]="'PLACEHOLDER_COUNTRY' | translate"
-              [class.is-invalid]="country.invalid && country.touched" aria-required="true"
+            <select class="form-select form-input-fields" name="country" [(ngModel)]="formData.country"
+              #country="ngModel" required [class.is-invalid]="country.invalid && country.touched" aria-required="true"
               aria-describedby="countryError">
+              <option value="United Kingdom" selected>United Kingdom</option>
+              <option value="France">France</option>
+              <option value="Germany">Germany</option>
+            </select>
             <!-- @if(country.invalid && country.touched){
               <div  id="countryError" class="invalid-feedback">
                 {{ 'COUNTRY_REQUIRED' | translate }}

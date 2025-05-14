@@ -25,7 +25,7 @@ export class LandingPageComponent {
     address2: '',
     city: '',
     postcode: '',
-    country: '',
+    country: 'United Kingdom',
     phone: '',
     email: '',
     confirmEmail: ''
