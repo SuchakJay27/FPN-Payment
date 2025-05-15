@@ -12,12 +12,14 @@ export class FpnPaymentService {
 
   //#region Get Location Data
   /**
-   * Retrieves city/location data from the API
-   * @param location - city or location
+   * Retrieves council/location data from the API
+   * @param location - council or location
    * @returns Observable<any>
    */
-  getCityData(location: string): Observable<any> {
-    return this.http.get<any>(`${this.apiBaseUrl}/${location}`); // update with actual API when available
+  validateCouncilData(location: string): Observable<any> {
+    return this.http.get<any>(`${this.apiBaseUrl}fpn/validatecouncil/${location}`,{
+      headers: { 'Accept-Language':'en'}
+    }); // update with actual API when available
   }
   //#endregion
 

@@ -17,7 +17,7 @@ export class AppComponent {
   //#region private Variables
   title = 'FPN-Payment';
   isNotFoundPage = false;
-  city: string | null = null;
+  council: string | null = null;
   //#endregion
 
   //#region Constructor
@@ -43,24 +43,25 @@ export class AppComponent {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      // Get the city parameter from the route snapshot
-      this.city = this.route.snapshot.firstChild?.paramMap.get('city')!;
-      if (this.city) {
-        // this.getCityDatayData(this.city)
+      // Get the council parameter from the route snapshot
+      this.council = this.route.snapshot.firstChild?.paramMap.get('council')!;
+      console.log(this.council);
+      if (this.council) {
+        this.validateCouncilData(this.council)
       }
     });
   }
   //#endregion
 
   //#region Private Methods
-  getCityDatayData(city: string): void {
-    // Call your API or service to get data for the city
-    this._locationService.getCityData(city).subscribe({
+  validateCouncilData(council: string): void {
+    // Call your API or service to get data for the council
+    this._locationService.validateCouncilData(council).subscribe({
       next: (data) => {
         console.log(data);
       },
       error: (err) => {
-        console.error(err);
+        this.router.navigateByUrl('/404');
       }
     });
   }
