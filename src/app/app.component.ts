@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './core/header/header.component';
 import { FooterComponent } from './core/footer/footer.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { FpnPaymentService } from './services/fpn-payment.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +14,15 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  //#region private Variables
   title = 'FPN-Payment';
   isNotFoundPage = false;
-  constructor(private translate: TranslateService, private router: Router) {
+  council: string | null = null;
+  //#endregion
+
+  //#region Constructor
+  constructor(private translate: TranslateService, private router: Router,
+    private _locationService: FpnPaymentService, private route: ActivatedRoute) {
     let setlang = localStorage.getItem('appLang')
     if (setlang) {
       this.translate.setDefaultLang(setlang);
@@ -28,4 +36,36 @@ export class AppComponent {
       }
     });
   }
+  //#endregion
+
+  //#region Lifecycle
+  ngOnInit(): void {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      // Get the council parameter from the route snapshot
+      this.council = this.route.snapshot.firstChild?.paramMap.get('council')!;
+      console.log(this.council);
+      if (this.council) {
+        this.validateCouncilData(this.council)
+      }
+    });
+  }
+  //#endregion
+
+  //#region Private Methods
+  validateCouncilData(council: string): void {
+    // Call your API or service to get data for the council
+    this._locationService.validateCouncilData(council).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (err) => {
+        this.router.navigateByUrl('/404');
+      }
+    });
+  }
+  //#endregion
+
+
 }

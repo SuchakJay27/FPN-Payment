@@ -9,14 +9,19 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-currentLang: string;
+  //#region private Variables
+  currentLang: string;
+  //#endregion
 
+  //#region Constructor
   constructor(private translate: TranslateService) {
     const savedLang = localStorage.getItem('appLang') || 'en';
     this.currentLang = savedLang;
     this.translate.use(this.currentLang);
   }
+  //#endregion
 
+  //#region Private Methods
   ChangeLang() {
     this.currentLang = this.currentLang === 'en' ? 'cymraeg' : 'en';
     this.translate.use(this.currentLang);
@@ -26,4 +31,6 @@ currentLang: string;
   getToggleLangLabel(): string {
     return this.currentLang === 'en' ? 'CYMRAEG' : 'ENGLISH';
   }
+  //#endregion
+
 }

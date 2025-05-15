@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
   styleUrl: './landing-page.component.css',
 })
 export class LandingPageComponent {
+  //#region private Variables
   currentStep = 1;
   totalSteps = 4;
   currentPageText = "";
@@ -23,7 +24,7 @@ export class LandingPageComponent {
     lname: '',
     address1: '',
     address2: '',
-    city: '',
+    council: '',
     postcode: '',
     country: 'United Kingdom',
     phone: '',
@@ -32,7 +33,9 @@ export class LandingPageComponent {
   };
   currentLang: string;
   langChangeSub: Subscription
+  //#endregion
 
+  //#region Constructor
   constructor(private translate: TranslateService) {
     const savedLang = localStorage.getItem('appLang') || 'en';
     this.currentLang = savedLang;
@@ -42,7 +45,9 @@ export class LandingPageComponent {
       this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
     });
   }
+  //#endregion
 
+  //#region Private Methods
   getProgressGradient(): string {
     const percent = (this.currentStep / this.totalSteps) * 100;
     return `conic-gradient(var(--secondary-color) 0% ${percent}%, var(--white) ${percent}% 100%)`;
@@ -76,6 +81,7 @@ export class LandingPageComponent {
     }
     return true;
   }
+  
 
   isValidEmail(email: string): boolean {
     if (!email) return false;
@@ -109,6 +115,18 @@ export class LandingPageComponent {
       return;
     }
   }
+
+  validFpnNumber(event: KeyboardEvent): boolean {    
+    const charCode = event.charCode || event.keyCode;
+    if (!(charCode >= 48 && charCode <= 57) && // numbers 0-9
+        !(charCode >= 65 && charCode <= 90) && // uppercase A-Z
+        !(charCode >= 97 && charCode <= 122)) { // lowercase a-z
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
+  //#endregion 
 
 
 }
