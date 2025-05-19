@@ -16,13 +16,14 @@ import { filter } from 'rxjs';
 export class AppComponent {
   //#region private Variables
   title = 'FPN-Payment';
-  isNotFoundPage = false;
+  isNotFoundPage!: boolean;
   council: string | null = null;
+  loadingCouncil = true;
   //#endregion
 
   //#region Constructor
   constructor(private translate: TranslateService, private router: Router,
-    private _locationService: FpnPaymentService, private route: ActivatedRoute) {
+    private _fpnPaymentService: FpnPaymentService, private route: ActivatedRoute) {
     let setlang = localStorage.getItem('appLang')
     if (setlang) {
       this.translate.setDefaultLang(setlang);
@@ -32,7 +33,7 @@ export class AppComponent {
     }
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.isNotFoundPage = event.urlAfterRedirects === '/404';
+        this.isNotFoundPage = event.urlAfterRedirects === '/page-not-found';
       }
     });
   }
@@ -43,11 +44,13 @@ export class AppComponent {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
+      this.loadingCouncil = true;
       // Get the council parameter from the route snapshot
       this.council = this.route.snapshot.firstChild?.paramMap.get('council')!;
-      console.log(this.council);
       if (this.council) {
         this.validateCouncilData(this.council)
+      } else {
+        this.loadingCouncil = false;
       }
     });
   }
@@ -56,12 +59,16 @@ export class AppComponent {
   //#region Private Methods
   validateCouncilData(council: string): void {
     // Call your API or service to get data for the council
-    this._locationService.validateCouncilData(council).subscribe({
-      next: (data) => {
-        console.log(data);
+    this._fpnPaymentService.validateCouncilData(council).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.loadingCouncil = false;
+          localStorage.setItem('sessionId', response.data.sessionId)
+        }
       },
       error: (err) => {
-        this.router.navigateByUrl('/404');
+        this.loadingCouncil = false;
+        this.router.navigateByUrl('/page-not-found');
       }
     });
   }

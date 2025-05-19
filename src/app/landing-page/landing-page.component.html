@@ -1,27 +1,15 @@
 <div class="landing-container">
-  <div
-    class="progressbar d-flex flex-row align-items-center"
-    role="progressbar"
-    [attr.aria-valuenow]="currentStep"
-    aria-valuemin="1"
-    [attr.aria-valuemax]="totalSteps"
-    aria-label="Form step progress"
-  >
-    <div
-      class="main-circle d-flex align-items-center justify-content-center order-2 order-md-1 me-0 me-md-3"
-      [ngStyle]="{ background: getProgressGradient() }"
-      aria-hidden="true"
-    >
+  <div class="progressbar d-flex flex-row align-items-center" role="progressbar" [attr.aria-valuenow]="currentStep"
+    aria-valuemin="1" [attr.aria-valuemax]="totalSteps" aria-label="Form step progress">
+    <div class="main-circle d-flex align-items-center justify-content-center order-2 order-md-1 me-0 me-md-3"
+      [ngStyle]="{ background: getProgressGradient() }" aria-hidden="true">
       <div class="second-circle" aria-hidden="true">
         {{ currentStep }} of {{ totalSteps }}
       </div>
     </div>
 
     <!-- Text description of progress -->
-    <div
-      class="progress-text order-1 order-md-2 ms-0 ms-md-3"
-      aria-labelledby="current-step-text next-step-text"
-    >
+    <div class="progress-text order-1 order-md-2 ms-0 ms-md-3" aria-labelledby="current-step-text next-step-text">
       <p class="current-page-name" id="current-step-text">
         {{ currentPageText }}
       </p>
@@ -48,51 +36,29 @@
               <h3 class="m-0 fpnheaderext">
                 {{ "FIXED_PENALTY_NOTICE" | translate }}
               </h3>
-              <label class="mt-2" for="fpnNumber"
-                >{{ "FPN_NUMBER" | translate
-                }}<span class="text-danger"> *</span></label
-              >
-              <input
-                type="text"
-                id="fpnNumber"
-                class="form-control form-input-fields mt-2 my-1"
-                placeholder="e.g. 44332234443"
-                [(ngModel)]="formData.fpnNumber"
-                name="fpnNumber"
-                required
-                inputmode="numeric"
-                pattern="[0-9]*"
-                [attr.aria-invalid]="
+              <label class="mt-2" for="fpnNumber">{{ "FPN_NUMBER" | translate
+                }}<span class="text-danger"> *</span></label>
+              <input #fpnInput type="text" id="fpnNumber" class="form-control form-input-fields mt-2 my-1"
+                placeholder="e.g. 44332234443" [(ngModel)]="formData.fpnNumber" name="fpnNumber" required
+                inputmode="numeric" pattern="[0-9]*" [attr.aria-invalid]="
                   !formData.fpnNumber && isFPNNumber === false
-                "
-                aria-describedby="fpnError"
-                (keypress)="validFpnNumber($event)"
-              />
-              @if(!formData.fpnNumber && isFPNNumber == false){
+                " aria-describedby="fpnError" (keypress)="validFpnNumber($event,formData.fpnNumber)" />
+              @if(isFPNNumber == false){
               <span id="fpnError" class="text-danger mt-1" role="alert">
-                {{ "FPN_REQUIRED" | translate }}
+                {{ fpnNumberRequired }}
               </span>
               }
             </div>
 
             <div class="row">
               <div class="col-md-6">
-                <button
-                  type="button"
-                  class="btn btn-continue w-100"
-                  (click)="validateAndNext('CONFIRMDETAIL', 'PAYMENTDETAILS')"
-                  aria-label="Continue to payment details"
-                >
+                <button type="button" class="btn btn-continue w-100"
+                  (click)="validateAndNext('CONFIRMDETAIL', 'PAYMENTDETAILS')" aria-label="Continue to payment details">
                   Continue
                 </button>
               </div>
               <div class="col-md-6">
-                <button
-                  type="button"
-                  class="btn btn-continue w-100"
-                  (click)="resetForm()"
-                  aria-label="Reset form"
-                >
+                <button type="button" class="btn btn-continue w-100" (click)="resetForm()" aria-label="Reset form">
                   Reset
                 </button>
               </div>
@@ -112,55 +78,43 @@
             </h5>
           </div>
 
-          <div
-            class="p-1 mt-1"
-            role="region"
-            aria-labelledby="confirmStepTitle"
-          >
+          <div class="p-1 mt-1" role="region" aria-labelledby="confirmStepTitle">
             <p>
-              <strong>{{ "REFERENCE" | translate }}:</strong> 360237983
+              <strong>{{ "REFERENCE" | translate }} :</strong> {{ fpnDetails.tktSrNo }}
             </p>
             <p>
-              <strong>{{ "ISSUED_AT" | translate }}:</strong> 08-Sept-24 at
-              16:50
+              <strong>{{ "ISSUED_AT" | translate }} :</strong> {{ getDateFormat(fpnDetails.issueDate) }}
             </p>
             <p>
-              <strong>{{ "ISSUED_AT" | translate }}:</strong>
-              {{ "LITTERDEP" | translate }} ({{ "CIGARETTE" | translate }})
+              <strong>{{ "OFFENCE" | translate }} :</strong>
+              {{ fpnDetails.parentTktName }} ({{ fpnDetails.tktName }})
             </p>
             <p>
-              <strong>{{ "AMOUNT" | translate }}:</strong> £80.00
+              <strong>{{ "AMOUNT" | translate }} :</strong> £{{ fpnDetails.amt | number: '1.2-2' }}
             </p>
             <p>
-              <strong>{{ "DESCRIPTION" | translate }}:</strong> Dropped
-              cigarette and walked away
+              <strong>{{ "DESCRIPTION" | translate }} :</strong> {{ fpnDetails.fpnDesc }}
             </p>
             <p>
-              <strong>{{ "AREA" | translate }}:</strong> Bloomsbury Ward
+              <strong>{{ "AREA" | translate }} :</strong> {{ fpnDetails.locArea }}
             </p>
             <p>
-              <strong>{{ "ALLEGED_OFFENDER_DETAILS" | translate }}:</strong> Xyz
+              <strong>{{ "ALLEGED_OFFENDER_DETAILS" | translate }} :</strong> 
+            <p>
+              <strong>{{ "NAME" | translate }} :</strong> {{ fpnDetails.title }} {{ fpnDetails.fName }} {{ fpnDetails.lName }}
             </p>
           </div>
 
           <div class="row mt-1 pb-3">
             <div class="col-md-6">
-              <button
-                type="button"
-                class="btn btn-continue w-100"
-                (click)="prevStep('ENTERFPN', 'CONFIRMDETAIL')"
-                aria-label="Go back to enter FPN details"
-              >
+              <button type="button" class="btn btn-continue w-100" (click)="prevStep('ENTERFPN', 'CONFIRMDETAIL')"
+                aria-label="Go back to enter FPN details">
                 Back
               </button>
             </div>
             <div class="col-md-6">
-              <button
-                type="button"
-                class="btn btn-continue w-100"
-                (click)="nextStep('PAYMENTDETAILS', 'CONFIRMATION')"
-                aria-label="Continue to payment details"
-              >
+              <button type="button" class="btn btn-continue w-100" (click)="nextStep('PAYMENTDETAILS', 'CONFIRMATION')"
+                aria-label="Continue to payment details">
                 Continue to payment
               </button>
             </div>
@@ -192,23 +146,12 @@
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3 position-relative">
-            <label for="fname" class="form-label"
-              >{{ "FIRST_NAME" | translate }}
-              <span class="text-danger">*</span></label
-            >
-            <input
-              type="text"
-              id="fname"
-              class="form-control form-input-fields"
-              name="fname"
-              [(ngModel)]="formData.fname"
-              #fname="ngModel"
-              required
-              [placeholder]="'PLACEHOLDER_FIRST_NAME' | translate"
-              [class.is-invalid]="fname.invalid && fname.touched"
-              aria-required="true"
-              aria-describedby="fnameError"
-            />
+            <label for="fname" class="form-label">{{ "FIRST_NAME" | translate }}
+              <span class="text-danger">*</span></label>
+            <input type="text" id="fname" class="form-control form-input-fields" name="fname"
+              [(ngModel)]="formData.fname" #fname="ngModel" required
+              [placeholder]="'PLACEHOLDER_FIRST_NAME' | translate" [class.is-invalid]="fname.invalid && fname.touched"
+              aria-required="true" aria-describedby="fnameError" />
             <!-- @if(fname.invalid && fname.touched){
               <div id="fnameError" class="invalid-feedback">
             {{ 'FIRST_NAME_REQUIRED' | translate }}
@@ -217,23 +160,11 @@
           </div>
 
           <div class="mb-3 position-relative">
-            <label for="lname" class="form-label"
-              >{{ "LAST_NAME" | translate }}
-              <span class="text-danger">*</span></label
-            >
-            <input
-              type="text"
-              id="lname"
-              class="form-control form-input-fields"
-              name="lname"
-              [(ngModel)]="formData.lname"
-              #lname="ngModel"
-              required
-              [placeholder]="'PLACEHOLDER_LAST_NAME' | translate"
-              [class.is-invalid]="lname.invalid && lname.touched"
-              aria-required="true"
-              aria-describedby="lnameError"
-            />
+            <label for="lname" class="form-label">{{ "LAST_NAME" | translate }}
+              <span class="text-danger">*</span></label>
+            <input type="text" id="lname" class="form-control form-input-fields" name="lname"
+              [(ngModel)]="formData.lname" #lname="ngModel" required [placeholder]="'PLACEHOLDER_LAST_NAME' | translate"
+              [class.is-invalid]="lname.invalid && lname.touched" aria-required="true" aria-describedby="lnameError" />
             <!-- @if(lname.invalid && lname.touched){
               <div id="lnameError" class="invalid-feedback">
             {{ 'LAST_NAME_REQUIRED' | translate }}
@@ -242,23 +173,13 @@
           </div>
 
           <div class="mb-3 position-relative">
-            <label for="address1" class="form-label"
-              >{{ "ADDRESS_LINE1" | translate }}
-              <span class="text-danger">*</span></label
-            >
-            <input
-              type="text"
-              id="address1"
-              class="form-control form-input-fields"
-              name="address1"
-              [(ngModel)]="formData.address1"
-              #address1="ngModel"
-              required
+            <label for="address1" class="form-label">{{ "ADDRESS_LINE1" | translate }}
+              <span class="text-danger">*</span></label>
+            <input type="text" id="address1" class="form-control form-input-fields" name="address1"
+              [(ngModel)]="formData.address1" #address1="ngModel" required
               [placeholder]="'PLACEHOLDER_ADDRESS_LINE1' | translate"
-              [class.is-invalid]="address1.invalid && address1.touched"
-              aria-required="true"
-              aria-describedby="address1Error"
-            />
+              [class.is-invalid]="address1.invalid && address1.touched" aria-required="true"
+              aria-describedby="address1Error" />
             <!-- @if(address1.invalid && address1.touched){
               <div id="address1Error" class="invalid-feedback">
                 {{ 'ADDRESS_LINE1_REQUIRED' | translate }}
@@ -267,18 +188,10 @@
           </div>
 
           <div class="mb-3">
-            <input
-              type="text"
-              class="form-control form-input-fields"
-              name="address2"
-              [(ngModel)]="formData.address2"
-              #address2="ngModel"
-              required
-              [placeholder]="'PLACEHOLDER_ADDRESS_LINE2' | translate"
-              [class.is-invalid]="address2.invalid && address2.touched"
-              aria-required="true"
-              aria-describedby="address2Error"
-            />
+            <input type="text" class="form-control form-input-fields" name="address2" [(ngModel)]="formData.address2"
+              #address2="ngModel" required [placeholder]="'PLACEHOLDER_ADDRESS_LINE2' | translate"
+              [class.is-invalid]="address2.invalid && address2.touched" aria-required="true"
+              aria-describedby="address2Error" />
             <!-- @if(address2.invalid && address2.touched){
             <div id="address2Error" class="invalid-feedback">
               {{ 'ADDRESS_LINE2_REQUIRED' | translate }}
@@ -287,38 +200,22 @@
           </div>
 
           <div class="mb-3 position-relative">
-            <input
-              type="text"
-              class="form-control form-input-fields"
-              name="council"
-              [(ngModel)]="formData.council"
-              #council="ngModel"
-              required
-              [placeholder]="'PLACEHOLDER_council' | translate"
-              [class.is-invalid]="council.invalid && council.touched"
-              aria-required="true"
-              aria-describedby="councilError"
-            />
-            <!-- @if(council.invalid && council.touched){
-              <div id="councilError" class="invalid-feedback">
-                {{ 'council_REQUIRED' | translate }}
+            <input type="text" class="form-control form-input-fields" name="city" [(ngModel)]="formData.city"
+              #city="ngModel" required [placeholder]="'PLACEHOLDER_CITY' | translate"
+              [class.is-invalid]="city.invalid && city.touched" aria-required="true"
+              aria-describedby="cityError" />
+            <!-- @if(city.invalid && city.touched){
+              <div id="cityError" class="invalid-feedback">
+                {{ 'CITY_REQUIRED' | translate }}
               </div>
             } -->
           </div>
 
           <div class="mb-3 position-relative">
-            <input
-              type="text"
-              class="form-control form-input-fields"
-              name="postcode"
-              [(ngModel)]="formData.postcode"
-              #postcode="ngModel"
-              required
-              [placeholder]="'PLACEHOLDER_POSTCODE' | translate"
-              [class.is-invalid]="postcode.invalid && postcode.touched"
-              aria-required="true"
-              aria-describedby="postcodeError"
-            />
+            <input type="text" class="form-control form-input-fields" name="postcode" [(ngModel)]="formData.postcode"
+              #postcode="ngModel" required [placeholder]="'PLACEHOLDER_POSTCODE' | translate"
+              [class.is-invalid]="postcode.invalid && postcode.touched" aria-required="true"
+              aria-describedby="postcodeError" />
             <!-- @if(postcode.invalid && postcode.touched){
               <div id="postcodeError" class="invalid-feedback">
                 {{ 'POSTCODE_REQUIRED' | translate }}
@@ -327,19 +224,12 @@
           </div>
 
           <div class="mb-3">
-            <select
-              class="form-select form-input-fields"
-              name="country"
-              [(ngModel)]="formData.country"
-              #country="ngModel"
-              required
-              [class.is-invalid]="country.invalid && country.touched"
-              aria-required="true"
-              aria-describedby="countryError"
-            >
-              <option value="United Kingdom" selected>United Kingdom</option>
-              <option value="France">France</option>
-              <option value="Germany">Germany</option>
+            <select class="form-select form-input-fields" name="country" [(ngModel)]="formData.country"
+              #country="ngModel" required [class.is-invalid]="country.invalid && country.touched" aria-required="true"
+              aria-describedby="countryError">
+              <option value="UK" selected>United Kingdom</option>
+              <option value="Fr">France</option>
+              <option value="Ge">Germany</option>
             </select>
             <!-- @if(country.invalid && country.touched){
               <div  id="countryError" class="invalid-feedback">
@@ -351,26 +241,12 @@
 
         <div class="col-md-6">
           <div class="mb-3 position-relative">
-            <label for="phone" class="form-label"
-              >{{ "PHONE" | translate }}
-              <span class="text-danger">*</span></label
-            >
-            <input
-              type="text"
-              id="phone"
-              class="form-control form-input-fields"
-              name="phone"
-              [(ngModel)]="formData.phone"
-              #phone="ngModel"
-              required
-              inputmode="numeric"
-              pattern="[0-9]*"
-              [placeholder]="'PLACEHOLDER_PHONE' | translate"
-              [class.is-invalid]="phone.invalid && phone.touched"
-              aria-required="true"
-              aria-describedby="phoneError"
-              (keypress)="allowOnlyNumbers($event)"
-            />
+            <label for="phone" class="form-label">{{ "PHONE" | translate }}
+              <span class="text-danger">*</span></label>
+            <input type="text" id="phone" class="form-control form-input-fields" name="phone"
+              [(ngModel)]="formData.phone" #phone="ngModel" required inputmode="numeric" pattern="[0-9]*"
+              [placeholder]="'PLACEHOLDER_PHONE' | translate" [class.is-invalid]="phone.invalid && phone.touched"
+              aria-required="true" aria-describedby="phoneError" (keypress)="allowOnlyNumbers($event)" />
             <!-- @if(phone.invalid && phone.touched){
               <div  id="phoneError" class="invalid-feedback">
                 {{ 'PHONE_REQUIRED' | translate }}
@@ -379,25 +255,13 @@
           </div>
 
           <div class="mb-3 position-relative">
-            <label for="email" class="form-label"
-              >{{ "EMAIL" | translate }}
-              <span class="text-danger">*</span></label
-            >
-            <input
-              type="email"
-              id="email"
-              class="form-control form-input-fields"
-              name="email"
-              [(ngModel)]="formData.email"
-              #email="ngModel"
-              required
-              [placeholder]="'PLACEHOLDER_EMAIL' | translate"
+            <label for="email" class="form-label">{{ "EMAIL" | translate }}
+              <span class="text-danger">*</span></label>
+            <input type="email" id="email" class="form-control form-input-fields" name="email"
+              [(ngModel)]="formData.email" #email="ngModel" required [placeholder]="'PLACEHOLDER_EMAIL' | translate"
               [class.is-invalid]="
                 !isValidEmail(formData.email) && email.touched
-              "
-              aria-required="true"
-              aria-describedby="emailError"
-            />
+              " aria-required="true" aria-describedby="emailError" />
             <!-- @if(email.invalid && email.touched){
               <div  id="emailError" class="invalid-feedback">
                 {{ 'EMAIL_REQUIRED' | translate }}
@@ -406,27 +270,15 @@
           </div>
 
           <div class="mb-3 position-relative">
-            <label for="confirmEmail" class="form-label"
-              >{{ "CONFIRM_EMAIL" | translate }}
-              <span class="text-danger">*</span></label
-            >
-            <input
-              type="email"
-              id="confirmEmail"
-              class="form-control form-input-fields"
-              [placeholder]="'PLACEHOLDER_CONFIRM_EMAIL' | translate"
-              name="confirmEmail"
-              [(ngModel)]="formData.confirmEmail"
-              #confirmEmail="ngModel"
-              required
-              [class.is-invalid]="
+            <label for="confirmEmail" class="form-label">{{ "CONFIRM_EMAIL" | translate }}
+              <span class="text-danger">*</span></label>
+            <input type="email" id="confirmEmail" class="form-control form-input-fields"
+              [placeholder]="'PLACEHOLDER_CONFIRM_EMAIL' | translate" name="confirmEmail"
+              [(ngModel)]="formData.confirmEmail" #confirmEmail="ngModel" required [class.is-invalid]="
                 (confirmEmail.invalid && confirmEmail.touched) ||
                 (formData.confirmEmail &&
                   formData.email !== formData.confirmEmail)
-              "
-              aria-required="true"
-              aria-describedby="confirmEmailError"
-            />
+              " aria-required="true" aria-describedby="confirmEmailError" />
             <!-- @if(confirmEmail.invalid && confirmEmail.touched){
               <div id="confirmEmailError" class="invalid-feedback">
                 {{ 'CONFIRM_EMAIL_REQUIRED' | translate }}
@@ -444,14 +296,14 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>360237983</td>
-                  <td>£80.00</td>
+                  <td>{{ fpnDetails.tktSrNo }}</td>
+                  <td>£{{ fpnDetails.amt | number: '1.2-2' }}</td>
                 </tr>
                 <tr>
                   <td>
                     <strong>{{ "TOTAL" | translate }}</strong>
                   </td>
-                  <td><strong>£80.00</strong></td>
+                  <td><strong>£{{ fpnDetails.amt | number: '1.2-2' }}</strong></td>
                 </tr>
               </tbody>
             </table>
@@ -460,23 +312,13 @@
       </div>
 
       <div class="row mt-4 pb-3">
-        <div
-          class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3"
-        >
-          <button
-            type="button"
-            class="btn btn-continue w-100 w-md-auto"
-            (click)="PaySecurely(paymentForm)"
-            aria-label="Pay securely"
-          >
+        <div class="col-12 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+          <button type="button" class="btn btn-continue w-100 w-md-auto" (click)="PaySecurely(paymentForm)"
+            aria-label="Pay securely">
             Pay Securely
           </button>
-          <button
-            type="button"
-            class="btn btn-continue w-100 w-md-auto"
-            (click)="prevStep('CONFIRMDETAIL', 'PAYMENTDETAILS')"
-            aria-label="Cancel and go back"
-          >
+          <button type="button" class="btn btn-continue w-100 w-md-auto"
+            (click)="prevStep('CONFIRMDETAIL', 'PAYMENTDETAILS')" aria-label="Cancel and go back">
             Cancel
           </button>
         </div>

@@ -2,10 +2,14 @@
   "name": "fpn-payment",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
     "start": "ng serve",
+    "start:dev": "ng serve --configuration=development",
+    "start:uat": "ng serve --configuration=uat",
+    "start:prod": "ng serve --configuration=production",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "build:dev": "ng build --configuration=development",
+    "build:uat": "ng build --configuration=uat",
+    "build:prod": "ng build --configuration=production",
     "test": "ng test"
   },
   "private": true,
@@ -22,6 +26,7 @@
     "@ngx-translate/http-loader": "^16.0.1",
     "bootstrap": "^5.3.5",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.21.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },

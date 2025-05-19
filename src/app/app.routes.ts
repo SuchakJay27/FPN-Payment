@@ -3,9 +3,8 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
 export const routes: Routes =  [
-  { path: '', component: LandingPageComponent },
-  { path: '404', component: NotFoundComponent },
+  { path: 'page-not-found', component: NotFoundComponent },
   { path: ':council', component: LandingPageComponent },
-  { path: '**', redirectTo: '404' }
+  { path: '**', redirectTo: 'page-not-found' }
   ];
   

@@ -17,6 +17,7 @@
   "DESCRIPTION": "Description",
   "AREA": "Area",
   "ALLEGED_OFFENDER_DETAILS": "Alleged Offender Details",
+  "NAME": "Name",
   "BACK": "Back",
   "CONTINUE_TO_PAYMENT": "Continue to payment",
   "PAYMENT_DETAILS": "Payment Details",
@@ -28,7 +29,7 @@
   "LAST_NAME": "Last Name(s)",
   "ADDRESS_LINE1": "Address Line",
   "ADDRESS_LINE2": "Address Line 2",
-  "council": "council",
+  "CITY": "city",
   "POSTCODE": "Postcode",
   "COUNTRY": "Country",
   "PHONE": "Phone Number",
@@ -38,7 +39,7 @@
   "PLACEHOLDER_LAST_NAME": "Last Name*",
   "PLACEHOLDER_ADDRESS_LINE1": "Address Line 1*",
   "PLACEHOLDER_ADDRESS_LINE2": "Address Line 2",
-  "PLACEHOLDER_council": "council*",
+  "PLACEHOLDER_CITY": "City*",
   "PLACEHOLDER_POSTCODE": "Postcode*",
   "PLACEHOLDER_COUNTRY": "Country*",
   "PLACEHOLDER_PHONE": "Phone*",
@@ -53,5 +54,6 @@
   "SELECTLANGUAGE": "CYMRAEG",
   "CONFIRMDETAIL": "Confirm Details",
   "PAYMENTDETAILS": "Payment Details",
-  "CONFIRMATION": "Confirmation"
+  "CONFIRMATION": "Confirmation",
+  "FPNDOESNOTEXIST" : "FPN Number Doesn't exist."
 }

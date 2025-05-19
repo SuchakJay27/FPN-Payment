@@ -1,4 +1,4 @@
-@if (!isNotFoundPage) {
+@if (!isNotFoundPage && !loadingCouncil) {
   <div class="app-container">
     <app-header></app-header>
     <main role="main" class="main-content">
@@ -8,7 +8,7 @@
     <app-footer></app-footer>
   </div>
 }
-@if (isNotFoundPage) {
+@if (isNotFoundPage && !loadingCouncil) {
   <ng-container>
     <router-outlet></router-outlet>
   </ng-container>
