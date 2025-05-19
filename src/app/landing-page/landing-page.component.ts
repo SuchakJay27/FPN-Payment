@@ -1,21 +1,16 @@
-import { NgStyle } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { CommonModule, formatDate, NgStyle } from '@angular/common';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
 import { FpnPaymentService } from '../services/fpn-payment.service';
-import { ToastrService, ToastNoAnimation } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [FormsModule, NgStyle, TranslateModule],
-  providers: [
-    { provide: ToastrService, useClass: ToastrService },
-    { provide: ToastNoAnimation, useClass: ToastNoAnimation }
-  ],
+  imports: [FormsModule, NgStyle, TranslateModule, CommonModule],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css',
 })
@@ -32,9 +27,9 @@ export class LandingPageComponent {
     lname: '',
     address1: '',
     address2: '',
-    council: '',
+    city: '',
     postcode: '',
-    country: 'United Kingdom',
+    country: 'UK',
     phone: '',
     email: '',
     confirmEmail: ''
@@ -43,15 +38,38 @@ export class LandingPageComponent {
   langChangeSub: Subscription;
   council: string | null = null;
   @ViewChild('fpnInput') fpnInput!: ElementRef;
+  fpnNumberRequired: string | undefined;
+  fpnDetails: any = {
+    tktSrNo: '',
+    issueDate: '',
+    otherProdName: '',
+    tktName: '',
+    parentTktName: '',
+    amt: '',
+    fpnDesc: '',
+    locAdd1: '',
+    locArea: '',
+    title: '',
+    fName: '',
+    lName: '',
+    add1: '',
+    add2: '',
+    town: '',
+    postCode: '',
+    gender: '',
+    dob: null
+  };
+  enableUnloadWarning = true;
   //#endregion
 
   //#region Constructor
   constructor(private translate: TranslateService, private _fpnPaymentService: FpnPaymentService,
-    private _toastrService: ToastrService, private router: Router, private route: ActivatedRoute) {
+    private router: Router, private route: ActivatedRoute) {
     const savedLang = localStorage.getItem('appLang') || 'en';
     this.currentLang = savedLang;
     this.translate.use(this.currentLang);
     this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
+    this.setFPNRequiredText('FPN_REQUIRED');
     this.langChangeSub = this.translate.onLangChange.subscribe(() => {
       this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
     });
@@ -66,6 +84,14 @@ export class LandingPageComponent {
   //#endregion
 
   //#region Private Methods
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any): void {
+    if (this.enableUnloadWarning) {
+      $event.preventDefault();
+      $event.returnValue = '';
+    }
+  }
+
   getProgressGradient(): string {
     const percent = (this.currentStep / this.totalSteps) * 100;
     return `conic-gradient(var(--secondary-color) 0% ${percent}%, var(--white) ${percent}% 100%)`;
@@ -81,9 +107,8 @@ export class LandingPageComponent {
       this.isFPNNumber = true;
     } else {
       this.isFPNNumber = false;
-      setTimeout(() => {
-        this.fpnInput.nativeElement.focus();
-      });
+      this.setFPNRequiredText('FPN_REQUIRED');
+      this.fpnInput.nativeElement.focus();
     }
   }
 
@@ -117,18 +142,51 @@ export class LandingPageComponent {
       this._fpnPaymentService.validateFPNNumber(this.formData.fpnNumber).subscribe({
         next: (response) => {
           if (response.success) {
-            this.nextStep(currentPageText, nextPageText);
+            this.getFPNDetails(currentPageText, nextPageText, response.data.fpnNumber)
           }
         },
         error: (error) => {
-          if (error.status == 404) {
-            this._toastrService.error("FPN Number Doesn't exist");
-          } else if (error.status == 401) {
-            this.showConfirmationPopUp("Invalid or expired session");
+          if (error) {
+            this.manageErrorMsg(error)
           }
         }
       });
     }
+  }
+
+  getFPNDetails(currentPageText: string, nextPageText: string, fpnNumber: string) {
+    this._fpnPaymentService.getFPNDetails(fpnNumber).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.nextStep(currentPageText, nextPageText);
+          if (res && Array.isArray(res.data) && res.data.length > 0) {
+            this.fpnDetails = { ...this.fpnDetails, ...res.data[0] };
+          } else {
+            this.fpnDetails = { ...this.fpnDetails };
+          }
+        }
+      },
+      error: (error) => {
+        if (error) {
+          this.manageErrorMsg(error)
+        }
+      }
+    })
+  }
+
+  manageErrorMsg(error: any) {
+    if (error.status == 404) {
+      this.setFPNRequiredText('FPNDOESNOTEXIST');
+      this.isFPNNumber = false;
+      this.fpnInput.nativeElement.focus();
+    } else if (error.status == 401) {
+      this.showConfirmationPopUp("Invalid or expired session");
+    }
+  }
+
+  getDateFormat(dateStr: string): string {
+    const date = new Date(dateStr);
+    return formatDate(date, "dd-MMM-yy 'at' HH:mm", 'en-US');
   }
 
   nextStep(currentPageText: string, nextPageText: string) {
@@ -147,6 +205,26 @@ export class LandingPageComponent {
         control.markAsTouched();
       });
       return;
+    } else {
+      let payload = {
+        "firstName": this.formData.fname,
+        "lastName": this.formData.lname,
+        "add1": this.formData.address1,
+        "add2": this.formData.address2,
+        "city": this.formData.city,
+        "postcode": this.formData.postcode,
+        "country": this.formData.country,
+        "phone": this.formData.phone,
+        "email": this.formData.confirmEmail,
+      }
+      this._fpnPaymentService.processPayment(payload).subscribe({
+        next: (res) => {
+          // console.log(res, "res");
+        },
+        error: (error) => {
+          // console.log('error', error)
+        }
+      })
     }
   }
 
@@ -199,6 +277,12 @@ export class LandingPageComponent {
       error: (err) => {
         this.router.navigateByUrl('/page-not-found');
       }
+    });
+  }
+
+  setFPNRequiredText(currentText: string) {
+    this.translate.get([currentText]).subscribe(translations => {
+      this.fpnNumberRequired = translations[currentText];
     });
   }
   //#endregion 

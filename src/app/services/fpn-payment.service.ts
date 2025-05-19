@@ -17,8 +17,8 @@ export class FpnPaymentService {
    * @returns Observable<any>
    */
   validateCouncilData(council: string): Observable<any> {
-    return this.http.get<any>(`${this.apiBaseUrl}/validatecouncil/${council}`,{
-      headers: { 'Accept-Language':'en'}
+    return this.http.get<any>(`${this.apiBaseUrl}/fpn/validatecouncil/${council}`, {
+      headers: { 'Accept-Language': 'en' }
     });
   }
 
@@ -27,12 +27,37 @@ export class FpnPaymentService {
  * @param fpnNumber - FPN number to validate
  * @returns Observable<any>
  */
-validateFPNNumber(fpnNumber: string): Observable<any> {
-  const headers = new HttpHeaders({
+  validateFPNNumber(fpnNumber: string): Observable<any> {
+    const headers = new HttpHeaders({
       'X-Session-Id': localStorage.getItem('sessionId')!
     });
     const params = new HttpParams().set('fpnNumber', fpnNumber);
-    return this.http.get<any>(`${this.apiBaseUrl}/validatefpnnumber`, { headers, params });
+    return this.http.get<any>(`${this.apiBaseUrl}/fpn/validatefpnnumber`, { headers, params });
+  }
+
+  /**
+  * Get the FPN Details using the backend API
+  * @param fpnNumber - FPN number to fetch details for
+  * @returns Observable<any>
+  */
+  getFPNDetails(fpnNumber: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'X-Session-Id': localStorage.getItem('sessionId')!
+    });
+    const params = new HttpParams().set('fpnNumber', fpnNumber);
+    return this.http.get<any>(`${this.apiBaseUrl}/fpn/getfpndetails`, { headers, params });
+  }
+
+  /**
+ * Payment Proceed using the backend API
+ * @param payload - details of Payment
+ * @returns Observable<any>
+ */
+  processPayment(payload: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'X-Session-Id': localStorage.getItem('sessionId')!
+    });
+    return this.http.post<any>(`${this.apiBaseUrl}/payment/processpayment`, payload, { headers });
   }
   //#endregion
 

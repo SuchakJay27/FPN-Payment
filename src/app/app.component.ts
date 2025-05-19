@@ -16,7 +16,7 @@ import { filter } from 'rxjs';
 export class AppComponent {
   //#region private Variables
   title = 'FPN-Payment';
-  isNotFoundPage! :boolean;
+  isNotFoundPage!: boolean;
   council: string | null = null;
   loadingCouncil = true;
   //#endregion
@@ -49,7 +49,7 @@ export class AppComponent {
       this.council = this.route.snapshot.firstChild?.paramMap.get('council')!;
       if (this.council) {
         this.validateCouncilData(this.council)
-      }else{
+      } else {
         this.loadingCouncil = false;
       }
     });
@@ -61,7 +61,7 @@ export class AppComponent {
     // Call your API or service to get data for the council
     this._fpnPaymentService.validateCouncilData(council).subscribe({
       next: (response) => {
-        if(response.success){
+        if (response.success) {
           this.loadingCouncil = false;
           localStorage.setItem('sessionId', response.data.sessionId)
         }

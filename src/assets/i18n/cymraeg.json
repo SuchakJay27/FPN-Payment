@@ -17,6 +17,7 @@
   "DESCRIPTION": "Disgrifiad",
   "AREA": "Ardal",
   "ALLEGED_OFFENDER_DETAILS": "Manylion y Troseddwr Trosfedd",
+  "NAME": "Enw",
   "BACK": "Yn ôl",
   "CONTINUE_TO_PAYMENT": "Parhau i dalu",
   "PAYMENT_DETAILS": "Manylion Talu",
@@ -28,7 +29,7 @@
   "LAST_NAME": "Enw Olaf",
   "ADDRESS_LINE1": "Llinell Cyfeiriad",
   "ADDRESS_LINE2": "Llinell Cyfeiriad 2",
-  "council": "Dinas",
+  "CITY": "Dinas",
   "POSTCODE": "Cod Post",
   "COUNTRY": "Gwlad",
   "PHONE": "Rhif Ffôn",
@@ -38,7 +39,7 @@
   "PLACEHOLDER_LAST_NAME": "Enw Olaf*",
   "PLACEHOLDER_ADDRESS_LINE1": "Llinell Cyfeiriad 1*",
   "PLACEHOLDER_ADDRESS_LINE2": "Llinell Cyfeiriad 2",
-  "PLACEHOLDER_council": "Dinas*",
+  "PLACEHOLDER_CITY": "Dinas*",
   "PLACEHOLDER_POSTCODE": "Cod Post*",
   "PLACEHOLDER_COUNTRY": "Gwlad*",
   "PLACEHOLDER_PHONE": "Ffôn*",
@@ -53,5 +54,6 @@
   "SELECTLANGUAGE": "ENGLISH",
   "CONFIRMDETAIL": "Cadarnhau Manylion",
   "PAYMENTDETAILS": "Manylion Taliad",
-  "CONFIRMATION": "Cadarnhad"
+  "CONFIRMATION": "Cadarnhad",
+  "FPNDOESNOTEXIST": "Nid yw'r Rhif FPN yn bodoli."
 }
