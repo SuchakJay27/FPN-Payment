@@ -141,8 +141,8 @@ export class LandingPageComponent {
     if (this.isFPNNumber) {
       this._fpnPaymentService.validateFPNNumber(this.formData.fpnNumber).subscribe({
         next: (response) => {
-          if (response.success) {
-            this.getFPNDetails(currentPageText, nextPageText, response.data.fpnNumber)
+          if (response && response?.success) {
+            this.getFPNDetails(currentPageText, nextPageText, response?.data?.fpnNumber)
           }
         },
         error: (error) => {
@@ -159,8 +159,8 @@ export class LandingPageComponent {
       next: (res) => {
         if (res.success) {
           this.nextStep(currentPageText, nextPageText);
-          if (res && Array.isArray(res.data) && res.data.length > 0) {
-            this.fpnDetails = { ...this.fpnDetails, ...res.data[0] };
+          if (res?.data && res?.data?.length > 0) {
+            this.fpnDetails = { ...this.fpnDetails, ...res?.data[0] };
           } else {
             this.fpnDetails = { ...this.fpnDetails };
           }
@@ -176,11 +176,16 @@ export class LandingPageComponent {
 
   manageErrorMsg(error: any) {
     if (error.status == 404) {
-      this.setFPNRequiredText('FPNDOESNOTEXIST');
+      // this.setFPNRequiredText('FPNDOESNOTEXIST');
+      this.fpnNumberRequired = error?.error?.data;
       this.isFPNNumber = false;
       this.fpnInput.nativeElement.focus();
     } else if (error.status == 401) {
       this.showConfirmationPopUp("Invalid or expired session");
+    }else if(error.status == 500){
+      this.isFPNNumber = false;
+      this.fpnInput.nativeElement.focus();
+      this.fpnNumberRequired = error?.error?.message;
     }
   }
 
@@ -270,8 +275,8 @@ export class LandingPageComponent {
     // Call your API or service to get data for the council
     this._fpnPaymentService.validateCouncilData(council).subscribe({
       next: (response) => {
-        if (response.success) {
-          localStorage.setItem('sessionId', response.data.sessionId)
+        if (response && response?.success) {
+          localStorage.setItem('sessionId', response?.data?.sessionId)
         }
       },
       error: (err) => {
