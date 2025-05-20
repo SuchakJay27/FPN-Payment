@@ -10,9 +10,9 @@
 
     <!-- Text description of progress -->
     <div class="progress-text order-1 order-md-2 ms-0 ms-md-3" aria-labelledby="current-step-text next-step-text">
-      <p class="current-page-name" id="current-step-text">
+      <h1 class="current-page-name" id="current-step-text">
         {{ currentPageText }}
-      </p>
+      </h1>
       <p class="next-page-name" id="next-step-text">Next: {{ nextPageText }}</p>
     </div>
   </div>
@@ -40,9 +40,10 @@
                 }}<span class="text-danger"> *</span></label>
               <input #fpnInput type="text" id="fpnNumber" class="form-control form-input-fields mt-2 my-1"
                 placeholder="e.g. 44332234443" [(ngModel)]="formData.fpnNumber" name="fpnNumber" required
-                inputmode="numeric" pattern="[0-9]*" [attr.aria-invalid]="
-                  !formData.fpnNumber && isFPNNumber === false
-                " aria-describedby="fpnError" (keypress)="validFpnNumber($event,formData.fpnNumber)" />
+                inputmode="numeric" pattern="[0-9]*" [attr.aria-invalid]="!formData.fpnNumber && isFPNNumber === false"
+                [attr.aria-describedby]="isFPNNumber === false ? 'fpnError' : null"
+                (keypress)="validFpnNumber($event, formData.fpnNumber)" />
+
               @if(isFPNNumber == false){
               <span id="fpnError" class="text-danger mt-1" role="alert">
                 {{ fpnNumberRequired }}
@@ -73,9 +74,9 @@
       <div class="col-md-12">
         <div class="col-md-6">
           <div class="mt-4">
-            <h5 class="fw-bold" id="confirmStepTitle">
+            <h2 class="fw-bold fpnheaderext" id="confirmStepTitle">
               2.{{ "CONFIRMDETAILS" | translate }}
-            </h5>
+            </h2>
           </div>
 
           <div class="p-1 mt-1" role="region" aria-labelledby="confirmStepTitle">
@@ -99,10 +100,9 @@
               <strong>{{ "AREA" | translate }} :</strong> {{ fpnDetails.locArea }}
             </p>
             <p>
-              <strong>{{ "ALLEGED_OFFENDER_DETAILS" | translate }} :</strong> 
-            <p>
-              <strong>{{ "NAME" | translate }} :</strong> {{ fpnDetails.title }} {{ fpnDetails.fName }} {{ fpnDetails.lName }}
-            </p>
+              <strong>{{ "ALLEGED_OFFENDER_DETAILS" | translate }} :</strong> {{ fpnDetails.title }} {{ fpnDetails.fName
+              }} {{
+              fpnDetails.lName }}
           </div>
 
           <div class="row mt-1 pb-3">
@@ -128,13 +128,13 @@
         <div class="col-md-6">
           <div class="mt-4">
             <div class="mt-4">
-              <h5 class="fw-bold m-0" id="paymentDetailsTitle">
+              <h2 class="fw-bold m-0 fpnheaderext" id="paymentDetailsTitle">
                 3.{{ "PAYMENT_DETAILS" | translate }}
-              </h5>
+              </h2>
               <p>{{ "PAYMENT_READY" | translate }}</p>
             </div>
             <div class="mt-4">
-              <h5 class="fw-bold m-0">{{ "PAY_BY_CARD" | translate }}:</h5>
+              <h3 class="fw-bold m-0 fpnheaderext">{{ "PAY_BY_CARD" | translate }}</h3>
               <p class="mb-0">{{ "PAYMENT_CHECK" | translate }}</p>
               <p>{{ "EMAIL_RECEIPT" | translate }}</p>
             </div>
@@ -151,7 +151,8 @@
             <input type="text" id="fname" class="form-control form-input-fields" name="fname"
               [(ngModel)]="formData.fname" #fname="ngModel" required
               [placeholder]="'PLACEHOLDER_FIRST_NAME' | translate" [class.is-invalid]="fname.invalid && fname.touched"
-              aria-required="true" aria-describedby="fnameError" />
+              aria-required="true" [attr.aria-describedby]="fname.invalid && fname.touched ? 'fnameError' : null" />
+
             <!-- @if(fname.invalid && fname.touched){
               <div id="fnameError" class="invalid-feedback">
             {{ 'FIRST_NAME_REQUIRED' | translate }}
@@ -164,7 +165,9 @@
               <span class="text-danger">*</span></label>
             <input type="text" id="lname" class="form-control form-input-fields" name="lname"
               [(ngModel)]="formData.lname" #lname="ngModel" required [placeholder]="'PLACEHOLDER_LAST_NAME' | translate"
-              [class.is-invalid]="lname.invalid && lname.touched" aria-required="true" aria-describedby="lnameError" />
+              [class.is-invalid]="lname.invalid && lname.touched" aria-required="true"
+              [attr.aria-describedby]="lname.invalid && lname.touched ? 'lnameError' : null" />
+
             <!-- @if(lname.invalid && lname.touched){
               <div id="lnameError" class="invalid-feedback">
             {{ 'LAST_NAME_REQUIRED' | translate }}
@@ -179,7 +182,7 @@
               [(ngModel)]="formData.address1" #address1="ngModel" required
               [placeholder]="'PLACEHOLDER_ADDRESS_LINE1' | translate"
               [class.is-invalid]="address1.invalid && address1.touched" aria-required="true"
-              aria-describedby="address1Error" />
+              [attr.aria-describedby]="address1.invalid && address1.touched ? 'address1Error' : null" />
             <!-- @if(address1.invalid && address1.touched){
               <div id="address1Error" class="invalid-feedback">
                 {{ 'ADDRESS_LINE1_REQUIRED' | translate }}
@@ -188,10 +191,12 @@
           </div>
 
           <div class="mb-3">
-            <input type="text" class="form-control form-input-fields" name="address2" [(ngModel)]="formData.address2"
-              #address2="ngModel" required [placeholder]="'PLACEHOLDER_ADDRESS_LINE2' | translate"
+            <label for="address2" class="visually-hidden">{{ 'ADDRESS_LINE2' | translate }}</label>
+            <input type="text" id="address2" class="form-control form-input-fields" name="address2"
+              [(ngModel)]="formData.address2" #address2="ngModel" required
+              [placeholder]="'PLACEHOLDER_ADDRESS_LINE2' | translate"
               [class.is-invalid]="address2.invalid && address2.touched" aria-required="true"
-              aria-describedby="address2Error" />
+              [attr.aria-describedby]="address2.invalid && address2.touched ? 'address2Error' : null" />
             <!-- @if(address2.invalid && address2.touched){
             <div id="address2Error" class="invalid-feedback">
               {{ 'ADDRESS_LINE2_REQUIRED' | translate }}
@@ -200,10 +205,11 @@
           </div>
 
           <div class="mb-3 position-relative">
-            <input type="text" class="form-control form-input-fields" name="city" [(ngModel)]="formData.city"
+            <label for="city" class="visually-hidden">{{ 'CITY' | translate }}</label>
+            <input type="text" id="city" class="form-control form-input-fields" name="city" [(ngModel)]="formData.city"
               #city="ngModel" required [placeholder]="'PLACEHOLDER_CITY' | translate"
               [class.is-invalid]="city.invalid && city.touched" aria-required="true"
-              aria-describedby="cityError" />
+              [attr.aria-describedby]="city.invalid && city.touched ? 'cityError' : null" />
             <!-- @if(city.invalid && city.touched){
               <div id="cityError" class="invalid-feedback">
                 {{ 'CITY_REQUIRED' | translate }}
@@ -212,10 +218,12 @@
           </div>
 
           <div class="mb-3 position-relative">
-            <input type="text" class="form-control form-input-fields" name="postcode" [(ngModel)]="formData.postcode"
-              #postcode="ngModel" required [placeholder]="'PLACEHOLDER_POSTCODE' | translate"
+            <label for="postcode" class="visually-hidden">{{ 'POSTCODE' | translate }}</label>
+            <input type="text" id="postcode" class="form-control form-input-fields" name="postcode"
+              [(ngModel)]="formData.postcode" #postcode="ngModel" required
+              [placeholder]="'PLACEHOLDER_POSTCODE' | translate"
               [class.is-invalid]="postcode.invalid && postcode.touched" aria-required="true"
-              aria-describedby="postcodeError" />
+              [attr.aria-describedby]="postcode.invalid && postcode.touched ? 'postcodeError' : null" />
             <!-- @if(postcode.invalid && postcode.touched){
               <div id="postcodeError" class="invalid-feedback">
                 {{ 'POSTCODE_REQUIRED' | translate }}
@@ -224,9 +232,10 @@
           </div>
 
           <div class="mb-3">
-            <select class="form-select form-input-fields" name="country" [(ngModel)]="formData.country"
+            <label for="country" class="form-label visually-hidden">Country</label>
+            <select id="country" class="form-select form-input-fields" name="country" [(ngModel)]="formData.country"
               #country="ngModel" required [class.is-invalid]="country.invalid && country.touched" aria-required="true"
-              aria-describedby="countryError">
+              [attr.aria-describedby]="country.invalid && country.touched ? 'countryError' : null">
               <option value="UK" selected>United Kingdom</option>
               <option value="Fr">France</option>
               <option value="Ge">Germany</option>
@@ -246,7 +255,8 @@
             <input type="text" id="phone" class="form-control form-input-fields" name="phone"
               [(ngModel)]="formData.phone" #phone="ngModel" required inputmode="numeric" pattern="[0-9]*"
               [placeholder]="'PLACEHOLDER_PHONE' | translate" [class.is-invalid]="phone.invalid && phone.touched"
-              aria-required="true" aria-describedby="phoneError" (keypress)="allowOnlyNumbers($event)" />
+              aria-required="true" [attr.aria-describedby]="phone.invalid && phone.touched ? 'phoneError' : null"
+              (keypress)="allowOnlyNumbers($event)" />
             <!-- @if(phone.invalid && phone.touched){
               <div  id="phoneError" class="invalid-feedback">
                 {{ 'PHONE_REQUIRED' | translate }}
@@ -259,9 +269,8 @@
               <span class="text-danger">*</span></label>
             <input type="email" id="email" class="form-control form-input-fields" name="email"
               [(ngModel)]="formData.email" #email="ngModel" required [placeholder]="'PLACEHOLDER_EMAIL' | translate"
-              [class.is-invalid]="
-                !isValidEmail(formData.email) && email.touched
-              " aria-required="true" aria-describedby="emailError" />
+              [class.is-invalid]="!isValidEmail(formData.email) && email.touched" aria-required="true"
+              [attr.aria-describedby]="!isValidEmail(formData.email) && email.touched ? 'emailError' : null" />
             <!-- @if(email.invalid && email.touched){
               <div  id="emailError" class="invalid-feedback">
                 {{ 'EMAIL_REQUIRED' | translate }}
@@ -272,13 +281,14 @@
           <div class="mb-3 position-relative">
             <label for="confirmEmail" class="form-label">{{ "CONFIRM_EMAIL" | translate }}
               <span class="text-danger">*</span></label>
-            <input type="email" id="confirmEmail" class="form-control form-input-fields"
-              [placeholder]="'PLACEHOLDER_CONFIRM_EMAIL' | translate" name="confirmEmail"
-              [(ngModel)]="formData.confirmEmail" #confirmEmail="ngModel" required [class.is-invalid]="
+            <input type="email" id="confirmEmail" class="form-control form-input-fields" name="confirmEmail"
+              [(ngModel)]="formData.confirmEmail" #confirmEmail="ngModel" required
+              [placeholder]="'PLACEHOLDER_CONFIRM_EMAIL' | translate" [class.is-invalid]="
                 (confirmEmail.invalid && confirmEmail.touched) ||
-                (formData.confirmEmail &&
-                  formData.email !== formData.confirmEmail)
-              " aria-required="true" aria-describedby="confirmEmailError" />
+                (formData.confirmEmail && formData.email !== formData.confirmEmail)" aria-required="true"
+              [attr.aria-describedby]="(confirmEmail.invalid && 
+                 confirmEmail.touched) || (formData.confirmEmail && formData.email !== formData.confirmEmail)
+                 ? 'confirmEmailError' : null" />
             <!-- @if(confirmEmail.invalid && confirmEmail.touched){
               <div id="confirmEmailError" class="invalid-feedback">
                 {{ 'CONFIRM_EMAIL_REQUIRED' | translate }}

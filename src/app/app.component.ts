@@ -5,6 +5,7 @@ import { FooterComponent } from './core/footer/footer.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FpnPaymentService } from './services/fpn-payment.service';
 import { filter } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ export class AppComponent {
 
   //#region Constructor
   constructor(private translate: TranslateService, private router: Router,
-    private _fpnPaymentService: FpnPaymentService, private route: ActivatedRoute) {
+    private _fpnPaymentService: FpnPaymentService, private route: ActivatedRoute,
+    private titleService: Title) {
     let setlang = localStorage.getItem('appLang')
     if (setlang) {
       this.translate.setDefaultLang(setlang);
@@ -48,6 +50,7 @@ export class AppComponent {
       // Get the council parameter from the route snapshot
       this.council = this.route.snapshot.firstChild?.paramMap.get('council')!;
       if (this.council) {
+        this.titleService.setTitle(this.toTitleCase(this.council));
         this.validateCouncilData(this.council)
       } else {
         this.loadingCouncil = false;
@@ -61,9 +64,9 @@ export class AppComponent {
     // Call your API or service to get data for the council
     this._fpnPaymentService.validateCouncilData(council).subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response && response?.success) {
           this.loadingCouncil = false;
-          localStorage.setItem('sessionId', response.data.sessionId)
+          localStorage.setItem('sessionId', response?.data?.sessionId)
         }
       },
       error: (err) => {
@@ -71,6 +74,15 @@ export class AppComponent {
         this.router.navigateByUrl('/page-not-found');
       }
     });
+  }
+
+  toTitleCase(str: string): string {
+    if (!str) {
+      return "";
+    }
+    return str.toLowerCase().split(' ').map(function(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
   }
   //#endregion
 
