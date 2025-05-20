@@ -50,7 +50,7 @@ export class AppComponent {
       // Get the council parameter from the route snapshot
       this.council = this.route.snapshot.firstChild?.paramMap.get('council')!;
       if (this.council) {
-        this.titleService.setTitle(this.toCamelCase(this.council));
+        this.titleService.setTitle(this.toTitleCase(this.council));
         this.validateCouncilData(this.council)
       } else {
         this.loadingCouncil = false;
@@ -76,17 +76,13 @@ export class AppComponent {
     });
   }
 
-  toCamelCase(str: string): string {
-    if (!str.includes(' ')) {
-      return str;
+  toTitleCase(str: string): string {
+    if (!str) {
+      return "";
     }
-
-    return str
-      .toLowerCase()
-      .replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) =>
-        index === 0 ? match.toLowerCase() : match.toUpperCase()
-      )
-      .replace(/\s+/g, '');
+    return str.toLowerCase().split(' ').map(function(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
   }
   //#endregion
 
