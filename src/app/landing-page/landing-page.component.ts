@@ -114,7 +114,13 @@ export class LandingPageComponent {
 
   checkFPNNumber() {
     if (this.formData.fpnNumber) {
+      if (this.previousFPN !== this.formData.fpnNumber) {
+        this.isFieldsRest = true;
+      }else{
+        this.isFieldsRest = false;
+      }
       this.isFPNNumber = true;
+      
     } else {
       this.isFPNNumber = false;
       this.setFPNRequiredText('FPN_REQUIRED');
@@ -149,8 +155,7 @@ export class LandingPageComponent {
 
   validateAndNext(currentPageText: string, nextPageText: string) {
     this.checkFPNNumber();
-    this.isFieldsRest = false;
-    if (this.isFPNNumber && this.previousFPN !== this.formData.fpnNumber) {
+    if (this.isFPNNumber) {
       this._fpnPaymentService.validateFPNNumber(this.formData.fpnNumber).subscribe({
         next: (response) => {
           if (response && response?.success) {
@@ -163,8 +168,6 @@ export class LandingPageComponent {
           }
         }
       });
-    } else if(this.isFPNNumber) {
-      this.nextStep(currentPageText, nextPageText);
     }
   }
 
@@ -174,12 +177,10 @@ export class LandingPageComponent {
         if (res.success) {
           this.nextStep(currentPageText, nextPageText);
           if (res?.data && res?.data?.length > 0) {
-            this.isFieldsRest = true;
             this.fpnDetails = { ...this.fpnDetails, ...res?.data[0] };
             this.previousFPN = this.fpnDetails.tktSrNo;
           } else {
             this.fpnDetails = { ...this.resetFPNDetails };
-            this.isFieldsRest = true;
             this.previousFPN = this.fpnDetails.tktSrNo;
           }
         }
@@ -195,7 +196,6 @@ export class LandingPageComponent {
   manageErrorMsg(error: any) {
     this.isFPNNumber = false;
     this.fpnInput.nativeElement.focus();
-    this.isFieldsRest = true;
     this.fpnDetails = { ...this.resetFPNDetails };
     this.previousFPN = this.fpnDetails.tktSrNo;
     this.formData.country = 'UK';
@@ -328,6 +328,7 @@ export class LandingPageComponent {
     this.formData.phone = '';
     this.formData.email = '';
     this.formData.confirmEmail = '';
+    this.formData.country = 'UK';
   }
   //#endregion 
 
