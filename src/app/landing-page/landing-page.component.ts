@@ -29,7 +29,7 @@ export class LandingPageComponent {
     address2: '',
     city: '',
     postcode: '',
-    country: 'UK',
+    country: 'GB',
     phone: '',
     email: '',
     confirmEmail: ''
@@ -109,7 +109,7 @@ export class LandingPageComponent {
     this.isFieldsRest = false;
     this.fpnDetails = { ...this.resetFPNDetails };
     this.previousFPN = this.fpnDetails.tktSrNo;
-    this.formData.country = 'UK';
+    this.formData.country = 'GB';
   }
 
   checkFPNNumber() {
@@ -198,7 +198,7 @@ export class LandingPageComponent {
     this.fpnInput.nativeElement.focus();
     this.fpnDetails = { ...this.resetFPNDetails };
     this.previousFPN = this.fpnDetails.tktSrNo;
-    this.formData.country = 'UK';
+    this.formData.country = 'GB';
     if (error.status == 404) {
       // this.setFPNRequiredText('FPNDOESNOTEXIST');
       this.fpnNumberRequired = error?.error?.data;
@@ -250,14 +250,14 @@ export class LandingPageComponent {
       "phone": this.formData.phone,
       "email": this.formData.confirmEmail,
     }
-    // this._fpnPaymentService.processPayment(payload).subscribe({
-    //   next: (res) => {
-    //     // console.log(res, "res");
-    //   },
-    //   error: (error) => {
-    //     // console.log('error', error)
-    //   }
-    // })
+    this._fpnPaymentService.processPayment(payload).subscribe({
+      next: (res) => {
+        console.log(res, "res");
+      },
+      error: (error) => {
+        console.log('error', error)
+      }
+    })
   }
 
   validFpnNumber(event: KeyboardEvent, inputValue: string): boolean {
@@ -328,7 +328,7 @@ export class LandingPageComponent {
     this.formData.phone = '';
     this.formData.email = '';
     this.formData.confirmEmail = '';
-    this.formData.country = 'UK';
+    this.formData.country = 'GB';
   }
   //#endregion 
 
