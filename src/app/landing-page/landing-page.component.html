@@ -40,7 +40,7 @@
                 }}<span class="text-danger"> *</span></label>
               <input #fpnInput type="text" id="fpnNumber" class="form-control form-input-fields mt-2 my-1"
                 placeholder="e.g. 44332234443" [(ngModel)]="formData.fpnNumber" name="fpnNumber" required
-                inputmode="numeric" pattern="[0-9]*" [attr.aria-invalid]="!formData.fpnNumber && isFPNNumber === false"
+                inputmode="text" pattern="[A-Za-z0-9]*" [attr.aria-invalid]="!formData.fpnNumber && isFPNNumber === false"
                 [attr.aria-describedby]="isFPNNumber === false ? 'fpnError' : null"
                 (keypress)="validFpnNumber($event, formData.fpnNumber)" />
 
@@ -74,7 +74,7 @@
       <div class="col-md-12">
         <div class="col-md-6">
           <div class="mt-4">
-            <h2 class="fw-bold fpnheaderext" id="confirmStepTitle">
+            <h2 class="m-0 fpnheaderext" id="confirmStepTitle">
               2.{{ "CONFIRMDETAILS" | translate }}
             </h2>
           </div>
@@ -128,13 +128,13 @@
         <div class="col-md-6">
           <div class="mt-4">
             <div class="mt-4">
-              <h2 class="fw-bold m-0 fpnheaderext" id="paymentDetailsTitle">
+              <h2 class="m-0 fpnheaderext" id="paymentDetailsTitle">
                 3.{{ "PAYMENT_DETAILS" | translate }}
               </h2>
               <p>{{ "PAYMENT_READY" | translate }}</p>
             </div>
             <div class="mt-4">
-              <h3 class="fw-bold m-0 fpnheaderext">{{ "PAY_BY_CARD" | translate }}</h3>
+              <h3 class="m-0 fpnheaderext">{{ "PAY_BY_CARD" | translate }}</h3>
               <p class="mb-0">{{ "PAYMENT_CHECK" | translate }}</p>
               <p>{{ "EMAIL_RECEIPT" | translate }}</p>
             </div>
@@ -279,7 +279,7 @@
           </div>
 
           <div class="mb-3 position-relative">
-            <label for="confirmEmail" class="form-label">{{ "CONFIRM_EMAIL" | translate }}
+            <label #ConfirmEmail for="confirmEmail" class="form-label">{{ "CONFIRM_EMAIL" | translate }}
               <span class="text-danger">*</span></label>
             <input type="email" id="confirmEmail" class="form-control form-input-fields" name="confirmEmail"
               [(ngModel)]="formData.confirmEmail" #confirmEmail="ngModel" required

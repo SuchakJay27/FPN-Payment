@@ -38,6 +38,7 @@ export class LandingPageComponent {
   langChangeSub: Subscription;
   council: string | null = null;
   @ViewChild('fpnInput') fpnInput!: ElementRef;
+  @ViewChild('ConfirmEmail') ConfirmEmail!: ElementRef;
   fpnNumberRequired: string | undefined;
   fpnDetails: any = {
     tktSrNo: '',
@@ -60,6 +61,9 @@ export class LandingPageComponent {
     dob: null
   };
   enableUnloadWarning = true;
+  isFieldsRest = false;
+  previousFPN = '';
+  resetFPNDetails: any;
   //#endregion
 
   //#region Constructor
@@ -80,6 +84,7 @@ export class LandingPageComponent {
   ngOnInit(): void {
     // Get the council parameter from the route snapshot
     this.council = this.route.snapshot?.paramMap.get('council')!;
+    this.resetFPNDetails = { ...this.fpnDetails };
   }
   //#endregion
 
@@ -99,7 +104,12 @@ export class LandingPageComponent {
 
   resetForm() {
     this.formData.fpnNumber = '';
-    this.isFPNNumber = true
+    this.isFPNNumber = true;
+    this.fpnInput.nativeElement.focus();
+    this.isFieldsRest = false;
+    this.fpnDetails = { ...this.resetFPNDetails };
+    this.previousFPN = this.fpnDetails.tktSrNo;
+    this.formData.country = 'UK';
   }
 
   checkFPNNumber() {
@@ -109,6 +119,7 @@ export class LandingPageComponent {
       this.isFPNNumber = false;
       this.setFPNRequiredText('FPN_REQUIRED');
       this.fpnInput.nativeElement.focus();
+      return
     }
   }
 
@@ -138,11 +149,12 @@ export class LandingPageComponent {
 
   validateAndNext(currentPageText: string, nextPageText: string) {
     this.checkFPNNumber();
-    if (this.isFPNNumber) {
+    this.isFieldsRest = false;
+    if (this.isFPNNumber && this.previousFPN !== this.formData.fpnNumber) {
       this._fpnPaymentService.validateFPNNumber(this.formData.fpnNumber).subscribe({
         next: (response) => {
           if (response && response?.success) {
-            this.getFPNDetails(currentPageText, nextPageText, response?.data?.fpnNumber)
+            this.getFPNDetails(currentPageText, nextPageText, response?.data?.fpnNumber);
           }
         },
         error: (error) => {
@@ -151,6 +163,8 @@ export class LandingPageComponent {
           }
         }
       });
+    } else if(this.isFPNNumber) {
+      this.nextStep(currentPageText, nextPageText);
     }
   }
 
@@ -160,31 +174,37 @@ export class LandingPageComponent {
         if (res.success) {
           this.nextStep(currentPageText, nextPageText);
           if (res?.data && res?.data?.length > 0) {
+            this.isFieldsRest = true;
             this.fpnDetails = { ...this.fpnDetails, ...res?.data[0] };
+            this.previousFPN = this.fpnDetails.tktSrNo;
           } else {
-            this.fpnDetails = { ...this.fpnDetails };
+            this.fpnDetails = { ...this.resetFPNDetails };
+            this.isFieldsRest = true;
+            this.previousFPN = this.fpnDetails.tktSrNo;
           }
         }
       },
       error: (error) => {
         if (error) {
-          this.manageErrorMsg(error)
+          this.manageErrorMsg(error);
         }
       }
     })
   }
 
   manageErrorMsg(error: any) {
+    this.isFPNNumber = false;
+    this.fpnInput.nativeElement.focus();
+    this.isFieldsRest = true;
+    this.fpnDetails = { ...this.resetFPNDetails };
+    this.previousFPN = this.fpnDetails.tktSrNo;
+    this.formData.country = 'UK';
     if (error.status == 404) {
       // this.setFPNRequiredText('FPNDOESNOTEXIST');
       this.fpnNumberRequired = error?.error?.data;
-      this.isFPNNumber = false;
-      this.fpnInput.nativeElement.focus();
     } else if (error.status == 401) {
       this.showConfirmationPopUp("Invalid or expired session");
-    }else if(error.status == 500){
-      this.isFPNNumber = false;
-      this.fpnInput.nativeElement.focus();
+    } else if (error.status == 500) {
       this.fpnNumberRequired = error?.error?.message;
     }
   }
@@ -197,11 +217,13 @@ export class LandingPageComponent {
   nextStep(currentPageText: string, nextPageText: string) {
     this.setPageText(currentPageText, nextPageText);
     if (this.currentStep < this.totalSteps) this.currentStep++;
+    if (this.isFieldsRest && this.currentStep === 3) this.resetFormData();
   }
 
   prevStep(currentPageText: string, nextPageText: string) {
     this.setPageText(currentPageText, nextPageText);
     if (this.currentStep > 1) this.currentStep--;
+    this.isFieldsRest = false;
   }
 
   PaySecurely(form: NgForm) {
@@ -210,27 +232,32 @@ export class LandingPageComponent {
         control.markAsTouched();
       });
       return;
-    } else {
-      let payload = {
-        "firstName": this.formData.fname,
-        "lastName": this.formData.lname,
-        "add1": this.formData.address1,
-        "add2": this.formData.address2,
-        "city": this.formData.city,
-        "postcode": this.formData.postcode,
-        "country": this.formData.country,
-        "phone": this.formData.phone,
-        "email": this.formData.confirmEmail,
-      }
-      this._fpnPaymentService.processPayment(payload).subscribe({
-        next: (res) => {
-          // console.log(res, "res");
-        },
-        error: (error) => {
-          // console.log('error', error)
-        }
-      })
     }
+
+    if (this.formData.email !== this.formData.confirmEmail) {
+      this.ConfirmEmail.nativeElement.focus();
+      return;
+    }
+
+    let payload = {
+      "firstName": this.formData.fname,
+      "lastName": this.formData.lname,
+      "add1": this.formData.address1,
+      "add2": this.formData.address2,
+      "city": this.formData.city,
+      "postcode": this.formData.postcode,
+      "country": this.formData.country,
+      "phone": this.formData.phone,
+      "email": this.formData.confirmEmail,
+    }
+    // this._fpnPaymentService.processPayment(payload).subscribe({
+    //   next: (res) => {
+    //     // console.log(res, "res");
+    //   },
+    //   error: (error) => {
+    //     // console.log('error', error)
+    //   }
+    // })
   }
 
   validFpnNumber(event: KeyboardEvent, inputValue: string): boolean {
@@ -289,6 +316,18 @@ export class LandingPageComponent {
     this.translate.get([currentText]).subscribe(translations => {
       this.fpnNumberRequired = translations[currentText];
     });
+  }
+
+  resetFormData() {
+    this.formData.fname = '';
+    this.formData.lname = '';
+    this.formData.address1 = '';
+    this.formData.address2 = '';
+    this.formData.city = '';
+    this.formData.postcode = '';
+    this.formData.phone = '';
+    this.formData.email = '';
+    this.formData.confirmEmail = '';
   }
   //#endregion 
 
