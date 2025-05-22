@@ -82,7 +82,7 @@ export class LandingPageComponent {
     this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
     this.setFPNRequiredText('FPN_REQUIRED');
     this.langChangeSub = this.translate.onLangChange.subscribe(() => {
-      if (this.paymentStatus && this.fln && this.vendorTxCode && this.currentStep == 4) {
+      if (this.paymentStatus && this.vendorTxCode && this.currentStep == 4) {
         this.nextStep("CONFIRMPAYMENT", '');
       } else if (this.currentStep == 1) {
         this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
@@ -100,13 +100,13 @@ export class LandingPageComponent {
     // Get the council parameter from the route snapshot
     this.route.paramMap.subscribe(params => {
       this.council = params.get('council');
-      this.paymentStatus = params.get('paymentStatus')?.toLowerCase();
+      this.paymentStatus = params.get('paymentStatus')?.toLowerCase(); // success/failure
       if (this.paymentStatus) {
         this.route.queryParams.subscribe(query => {
           this.vendorTxCode = query['VendorTxCode'] || null;
-          this.fln = query['FLN'] || null;
+          // this.fln = query['FLN'] || null;
           this.reasonCode = query['reasonCode'] || null;
-          if (this.council && this.paymentStatus && this.fln && this.vendorTxCode) {
+          if (this.council && this.paymentStatus && this.vendorTxCode) {
             this._fpnPaymentService.getPaymentStatus(this.council.toLocaleLowerCase(), this.paymentStatus, this.vendorTxCode, this.reasonCode).subscribe({
               next: (response) => {
                 if (response?.success) {
@@ -128,7 +128,7 @@ export class LandingPageComponent {
                 }
               }
             });
-            this.currentStep = 3;
+            this.currentStep = 4;
             this.nextStep("CONFIRMPAYMENT", '');
           }
         });
@@ -310,6 +310,8 @@ export class LandingPageComponent {
     }
     this._fpnPaymentService.processPayment(payload).subscribe({
       next: (res) => {
+        // Remove any beforeunload handler
+        window.onbeforeunload = null;
         if (res?.success && res?.data && res?.data?.redirectUrl) {
           window.location.href = res?.data?.redirectUrl;
         }
