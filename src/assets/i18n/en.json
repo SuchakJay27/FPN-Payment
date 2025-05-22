@@ -55,5 +55,11 @@
   "CONFIRMDETAIL": "Confirm Details",
   "PAYMENTDETAILS": "Payment Details",
   "CONFIRMATION": "Confirmation",
-  "FPNDOESNOTEXIST" : "FPN Number Doesn't exist."
+  "FPNDOESNOTEXIST" : "FPN Number Doesn't exist.",
+  "CONFIRMPAYMENT" : "Payment Confirmation",
+  "TRANSACTION_FAILED_HEADING": "We regret that your transaction was not successful for the following reason:",
+  "TRANSACTION_FAILED_REASON": "This payment process was taken due to an unknown reason",
+  "TRANSACTION_FAILED_CONTACT": "Please contact us and we will be able to assist you further.",
+  "TRANSACTION_SUCCESS_HEADING": "Your payment has been processed successfully. Thank you.",
+  "TRANSACTION_SUCCESS_REF": "Payment Ref No: "
 }

@@ -55,5 +55,11 @@
   "CONFIRMDETAIL": "Cadarnhau Manylion",
   "PAYMENTDETAILS": "Manylion Taliad",
   "CONFIRMATION": "Cadarnhad",
-  "FPNDOESNOTEXIST": "Nid yw'r Rhif FPN yn bodoli."
+  "FPNDOESNOTEXIST": "Nid yw'r Rhif FPN yn bodoli.",
+  "CONFIRMPAYMENT": "Cadarnhad Taliad",
+  "TRANSACTION_FAILED_HEADING": "Rydym yn gresynu nad oedd eich trafodiad yn llwyddiannus am y rheswm canlynol:",
+  "TRANSACTION_FAILED_REASON": "Cafodd y broses dalu hon ei hatal oherwydd problem.",
+  "TRANSACTION_FAILED_CONTACT": "Cysylltwch â ni a byddwn yn gallu eich cynorthwyo cyn gynted â phosibl.",
+  "TRANSACTION_SUCCESS_HEADING": "Mae eich taliad wedi cael ei brosesu’n llwyddiannus. Diolch.",
+  "TRANSACTION_SUCCESS_REF": "Cyfeirnod Taliad: "
 }

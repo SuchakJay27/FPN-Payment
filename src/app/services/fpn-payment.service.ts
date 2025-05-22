@@ -59,6 +59,26 @@ export class FpnPaymentService {
     });
     return this.http.post<any>(`${this.apiBaseUrl}/payment/processpayment`, payload, { headers });
   }
+
+  /**
+ * Get payment status after SagePay redirect
+ * @param council - council name (e.g., camden)
+ * @param status - payment status (e.g., success or failure)
+ * @param vendorTxCode - transaction code from query param
+ * @param reasonCode - optional reason for failure
+ * @returns Observable<any>
+ */
+  getPaymentStatus(council: string, status: string, vendorTxCode: string, reasonCode?: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'X-Session-Id': localStorage.getItem('sessionId')!
+    });
+    let url = `${this.apiBaseUrl}/${council}/status/${status}?VendorTxCode=${vendorTxCode}`;
+    if (reasonCode) {
+      url += `&reasonCode=${reasonCode}`;
+    }
+    return this.http.get<any>(url, { headers });
+  }
+
   //#endregion
 
 }

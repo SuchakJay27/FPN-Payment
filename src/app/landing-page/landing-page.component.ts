@@ -64,6 +64,13 @@ export class LandingPageComponent {
   isFieldsRest = false;
   previousFPN = '';
   resetFPNDetails: any;
+  paymentStatus: string | null | undefined;
+  vendorTxCode: string | null | undefined;
+  fln: string | null | undefined;
+  reasonCode: string = '';
+  btnPayNowText: string = 'Make Another Payment';
+  paymentMsg: string | undefined;
+  transactionId: string | undefined;
   //#endregion
 
   //#region Constructor
@@ -75,7 +82,15 @@ export class LandingPageComponent {
     this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
     this.setFPNRequiredText('FPN_REQUIRED');
     this.langChangeSub = this.translate.onLangChange.subscribe(() => {
-      this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
+      if (this.paymentStatus && this.fln && this.vendorTxCode && this.currentStep == 4) {
+        this.nextStep("CONFIRMPAYMENT", '');
+      } else if (this.currentStep == 1) {
+        this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
+      } else if (this.currentStep == 2) {
+        this.setPageText('CONFIRMDETAIL', 'PAYMENTDETAILS');
+      } else if (this.currentStep == 3) {
+        this.setPageText('PAYMENTDETAILS', 'CONFIRMATION');
+      }
     });
   }
   //#endregion
@@ -83,7 +98,42 @@ export class LandingPageComponent {
   //#region Lifecycle
   ngOnInit(): void {
     // Get the council parameter from the route snapshot
-    this.council = this.route.snapshot?.paramMap.get('council')!;
+    this.route.paramMap.subscribe(params => {
+      this.council = params.get('council');
+      this.paymentStatus = params.get('paymentStatus')?.toLowerCase();
+      if (this.paymentStatus) {
+        this.route.queryParams.subscribe(query => {
+          this.vendorTxCode = query['VendorTxCode'] || null;
+          this.fln = query['FLN'] || null;
+          this.reasonCode = query['reasonCode'] || null;
+          if (this.council && this.paymentStatus && this.fln && this.vendorTxCode) {
+            this._fpnPaymentService.getPaymentStatus(this.council.toLocaleLowerCase(), this.paymentStatus, this.vendorTxCode, this.reasonCode).subscribe({
+              next: (response) => {
+                if (response?.success) {
+                  if (response?.data?.transactionId) {
+                    this.transactionId = response?.data?.transactionId;
+                  } else {
+                    this.btnPayNowText = response?.data?.btnPayNowText;
+                    this.paymentMsg = response?.data?.message;
+                  }
+                }
+              },
+              error: (error) => {
+                if (error) {
+                  if (error.status == 401) {
+                    // this.showConfirmationPopUp("Invalid or expired session");
+                  } else if (error.status == 500) {
+                    this.showConfirmationPopUp("Invalid or expired session");
+                  }
+                }
+              }
+            });
+            this.currentStep = 3;
+            this.nextStep("CONFIRMPAYMENT", '');
+          }
+        });
+      }
+    });
     this.resetFPNDetails = { ...this.fpnDetails };
   }
   //#endregion
@@ -116,11 +166,11 @@ export class LandingPageComponent {
     if (this.formData.fpnNumber) {
       if (this.previousFPN !== this.formData.fpnNumber) {
         this.isFieldsRest = true;
-      }else{
+      } else {
         this.isFieldsRest = false;
       }
       this.isFPNNumber = true;
-      
+
     } else {
       this.isFPNNumber = false;
       this.setFPNRequiredText('FPN_REQUIRED');
@@ -164,7 +214,7 @@ export class LandingPageComponent {
         },
         error: (error) => {
           if (error) {
-            this.manageErrorMsg(error)
+            this.manageErrorMsg(error);
           }
         }
       });
@@ -206,6 +256,8 @@ export class LandingPageComponent {
       this.showConfirmationPopUp("Invalid or expired session");
     } else if (error.status == 500) {
       this.fpnNumberRequired = error?.error?.message;
+    } else if (error.status == 409) {
+      this.fpnNumberRequired = error?.error?.data;
     }
   }
 
@@ -221,9 +273,15 @@ export class LandingPageComponent {
   }
 
   prevStep(currentPageText: string, nextPageText: string) {
-    this.setPageText(currentPageText, nextPageText);
-    if (this.currentStep > 1) this.currentStep--;
-    this.isFieldsRest = false;
+    if (!this.fpnDetails.tktSrNo) {
+      this.currentStep = 1;
+      this.isFieldsRest = false;
+      this.setPageText('ENTERFPN', 'CONFIRMDETAIL');
+    } else {
+      this.setPageText(currentPageText, nextPageText);
+      if (this.currentStep > 1) this.currentStep--;
+      this.isFieldsRest = false;
+    }
   }
 
   PaySecurely(form: NgForm) {
@@ -252,10 +310,16 @@ export class LandingPageComponent {
     }
     this._fpnPaymentService.processPayment(payload).subscribe({
       next: (res) => {
-        console.log(res, "res");
+        if (res?.success && res?.data && res?.data?.redirectUrl) {
+          window.location.href = res?.data?.redirectUrl;
+        }
       },
       error: (error) => {
-        console.log('error', error)
+        if (error.status == 401) {
+          this.showConfirmationPopUp("Invalid or expired session");
+        } else if (error.status == 500) {
+          this.showConfirmationPopUp("Invalid or expired session");
+        }
       }
     })
   }
@@ -303,7 +367,7 @@ export class LandingPageComponent {
     this._fpnPaymentService.validateCouncilData(council).subscribe({
       next: (response) => {
         if (response && response?.success) {
-          localStorage.setItem('sessionId', response?.data?.sessionId)
+          localStorage.setItem('sessionId', response?.data?.sessionId);
         }
       },
       error: (err) => {
@@ -329,6 +393,10 @@ export class LandingPageComponent {
     this.formData.email = '';
     this.formData.confirmEmail = '';
     this.formData.country = 'GB';
+  }
+
+  payAgain() {
+    this.router.navigate([`/${this.council}`], { replaceUrl: true });
   }
   //#endregion 
 
