@@ -4,8 +4,6 @@
 }
 
 .navbar-logo-left {
-  width: 130px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,10 +11,10 @@
 }
 
 
-.navbar-logo-left img {
+.navbar-logo-left .council-logo {
   max-width: 100% !important;
   max-height: 100% !important;
-  width: 100% !important;
+  width: 150px !important;
   display: block;
 }
 

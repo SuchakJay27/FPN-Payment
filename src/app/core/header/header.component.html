@@ -1,12 +1,14 @@
 <nav class="navbar navbar-expand-lg navbar-light p-4">
-  <div class="container-fluid d-flex justify-content-between align-items-center">
-    <div class="navbar-logo-left">
-      <img [src]="councilLogo" alt="Council Logo" height="40" (error)="onImageError($event)" />
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="navbar-logo-left d-flex align-items-center">
+        <img src="assets/Images/KingdomLAS1.png" alt="KingdomLAS1 Logo" height="40" class="me-3"/>
+        <img src="assets/Images/Line.png" alt="vertical line" height="40" class="me-3"/>
+        <img [src]="councilLogo" alt="Council Logo" class="council-logo" height="40" (error)="onImageError($event)" />
+      </div>
+  
+      <div class="navbar-lang-toggle">
+        <a role="button" (click)="ChangeLang()" (keydown.enter)="ChangeLang()" aria-label="Change Language" tabindex="0">{{ getToggleLangLabel() }}</a>
+      </div>
     </div>
-
-    <div class="navbar-lang-toggle">
-      <a role="button" (click)="ChangeLang()" (keydown.enter)="ChangeLang()" aria-label="Change Language"
-        tabindex="0">{{ getToggleLangLabel() }}</a>
-    </div>
-  </div>
-</nav>
+  </nav>
+  
