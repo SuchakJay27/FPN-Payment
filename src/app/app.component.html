@@ -1,6 +1,6 @@
 @if (!isNotFoundPage && !loadingCouncil) {
   <div class="app-container">
-    <app-header></app-header>
+    <app-header [councilLogo] = 'councilLogo'></app-header>
     <main role="main" class="main-content">
       <h1 class="visually-hidden">{{title}}</h1>
       <router-outlet></router-outlet>

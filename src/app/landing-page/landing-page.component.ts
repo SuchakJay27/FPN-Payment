@@ -68,9 +68,10 @@ export class LandingPageComponent {
   vendorTxCode: string | null | undefined;
   fln: string | null | undefined;
   reasonCode: string = '';
-  btnPayNowText: string = 'Make Another Payment';
+  btnPayNowText: string = 'Try payment again';
   paymentMsg: string | undefined;
   transactionId: string | undefined;
+  paymentProcessErroTaxt = "";
   //#endregion
 
   //#region Constructor
@@ -273,6 +274,7 @@ export class LandingPageComponent {
   }
 
   prevStep(currentPageText: string, nextPageText: string) {
+    this.paymentProcessErroTaxt = '';
     if (!this.fpnDetails.tktSrNo) {
       this.currentStep = 1;
       this.isFieldsRest = false;
@@ -312,15 +314,21 @@ export class LandingPageComponent {
       next: (res) => {
         // Remove any beforeunload handler
         window.onbeforeunload = null;
+        this.paymentProcessErroTaxt = '';
+        this.enableUnloadWarning = false;
         if (res?.success && res?.data && res?.data?.redirectUrl) {
           window.location.href = res?.data?.redirectUrl;
         }
       },
       error: (error) => {
-        if (error.status == 401) {
+        if (error.status == 404) {
+          this.paymentProcessErroTaxt = error?.error?.data;
+        } else if (error.status == 401) {
           this.showConfirmationPopUp("Invalid or expired session");
         } else if (error.status == 500) {
-          this.showConfirmationPopUp("Invalid or expired session");
+          this.paymentProcessErroTaxt = error?.error?.message;
+        } else if (error.status == 409) {
+          this.paymentProcessErroTaxt = error?.error?.data;
         }
       }
     })
@@ -370,6 +378,7 @@ export class LandingPageComponent {
       next: (response) => {
         if (response && response?.success) {
           localStorage.setItem('sessionId', response?.data?.sessionId);
+          localStorage.setItem('councilLogo', response?.data?.councilLogo);
         }
       },
       error: (err) => {

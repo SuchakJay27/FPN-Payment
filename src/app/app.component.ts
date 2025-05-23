@@ -20,6 +20,9 @@ export class AppComponent {
   isNotFoundPage!: boolean;
   council: string | null = null;
   loadingCouncil = true;
+  councilLogo = '';
+  paymentStatus: string | null | undefined;
+  vendorTxCode: string | null | undefined;
   //#endregion
 
   //#region Constructor
@@ -49,11 +52,18 @@ export class AppComponent {
       this.loadingCouncil = true;
       // Get the council parameter from the route snapshot
       this.council = this.route.snapshot.firstChild?.paramMap.get('council')!;
-      if (this.council) {
+       this.paymentStatus = this.route.snapshot.firstChild?.paramMap.get('paymentStatus');
+
+      // Access query parameters
+      const queryParams = this.route.snapshot.queryParamMap;
+      this.vendorTxCode = queryParams.get('VendorTxCode');
+      if (this.council && !this.paymentStatus && !this.vendorTxCode) {
         this.titleService.setTitle(this.toTitleCase(this.council));
         this.validateCouncilData(this.council)
       } else {
         this.loadingCouncil = false;
+        let logoUrl = localStorage.getItem('councilLogo')!
+        this.councilLogo = logoUrl;
       }
     });
   }
@@ -66,7 +76,9 @@ export class AppComponent {
       next: (response) => {
         if (response && response?.success) {
           this.loadingCouncil = false;
-          localStorage.setItem('sessionId', response?.data?.sessionId)
+          localStorage.setItem('sessionId', response?.data?.sessionId);
+          localStorage.setItem('councilLogo', response?.data?.councilLogo);
+          this.councilLogo = response?.data?.councilLogo;
         }
       },
       error: (err) => {
@@ -80,7 +92,7 @@ export class AppComponent {
     if (!str) {
       return "";
     }
-    return str.toLowerCase().split(' ').map(function(word) {
+    return str.toLowerCase().split(' ').map(function (word) {
       return word.charAt(0).toUpperCase() + word.slice(1);
     }).join(' ');
   }

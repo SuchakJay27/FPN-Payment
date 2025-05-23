@@ -539,6 +539,9 @@
           </button>
         </div>
       </div>
+      @if (paymentProcessErroTaxt) {
+        <div class="text-danger text-center"> {{ paymentProcessErroTaxt }}</div>
+      }
     </form>
     } @if(currentStep === 4 && paymentStatus && vendorTxCode){
     <div class="row">

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -11,6 +11,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 export class HeaderComponent {
   //#region private Variables
   currentLang: string;
+  @Input() councilLogo: any;
   //#endregion
 
   //#region Constructor
@@ -30,6 +31,12 @@ export class HeaderComponent {
 
   getToggleLangLabel(): string {
     return this.currentLang === 'en' ? 'CYMRAEG' : 'ENGLISH';
+  }
+
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    target.onerror = null;
+    target.src = 'assets/Images/defaultlogo.jpeg';
   }
   //#endregion
 
