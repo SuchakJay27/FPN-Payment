@@ -14,8 +14,9 @@
 .navbar-logo-left .council-logo {
   max-width: 100% !important;
   max-height: 100% !important;
-  width: 150px !important;
+  width: 90px !important;
   display: block;
+  object-fit: contain;
 }
 
 
