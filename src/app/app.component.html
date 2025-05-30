@@ -5,7 +5,7 @@
       <h1 class="visually-hidden">{{title}}</h1>
       <router-outlet></router-outlet>
     </main>
-    <app-footer></app-footer>
+    <app-footer [council] = 'council'></app-footer>
   </div>
 }
 @if (isNotFoundPage && !loadingCouncil) {

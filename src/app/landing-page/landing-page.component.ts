@@ -2,10 +2,10 @@ import { CommonModule, formatDate, NgStyle } from '@angular/common';
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { FpnPaymentService } from '../services/fpn-payment.service';
-import Swal from 'sweetalert2';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ModalService } from '../services/modal.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -76,7 +76,7 @@ export class LandingPageComponent {
 
   //#region Constructor
   constructor(private translate: TranslateService, private _fpnPaymentService: FpnPaymentService,
-    private router: Router, private route: ActivatedRoute) {
+    private router: Router, private route: ActivatedRoute, private _modalService: ModalService) {
     const savedLang = localStorage.getItem('appLang') || 'en';
     this.currentLang = savedLang;
     this.translate.use(this.currentLang);
@@ -136,6 +136,13 @@ export class LandingPageComponent {
       }
     });
     this.resetFPNDetails = { ...this.fpnDetails };
+    this._modalService.enableUnloadWarning$.subscribe((result:any) => {
+      if (result === false) {
+        this.enableUnloadWarning = result;
+      }else{
+        this.enableUnloadWarning = true;
+      }
+    })
   }
   //#endregion
 
@@ -254,6 +261,7 @@ export class LandingPageComponent {
       // this.setFPNRequiredText('FPNDOESNOTEXIST');
       this.fpnNumberRequired = error?.error?.data;
     } else if (error.status == 401) {
+      this.fpnNumberRequired = '';
       this.showConfirmationPopUp("Invalid or expired session");
     } else if (error.status == 500) {
       this.fpnNumberRequired = error?.error?.message;
@@ -352,18 +360,12 @@ export class LandingPageComponent {
   }
 
   showConfirmationPopUp(showMsg: string) {
-    Swal.fire({
-      // title: 'Are you sure?',
-      text: showMsg,
-      icon: 'warning',
-      showCancelButton: true,
+    this._modalService.showModalPopup(showMsg, '', 'warning', {
       showConfirmButton: false,
-      cancelButtonText: 'OK',
-      cancelButtonColor: '#6c757d',
-      allowOutsideClick: false,
-      allowEscapeKey: false
-    }).then((result) => {
-      if (!result.isConfirmed) {
+      showCancelButton: true,
+      cancelButtonText: 'OK'
+    }).then(result => {
+      if (result === 'cancel') {
         if (this.council) {
           this.validateCouncilData(this.council);
           this.resetForm();
