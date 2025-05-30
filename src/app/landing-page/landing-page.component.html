@@ -297,10 +297,7 @@
               name="address2"
               [(ngModel)]="formData.address2"
               #address2="ngModel"
-              required
               [placeholder]="'PLACEHOLDER_ADDRESS_LINE2' | translate"
-              [class.is-invalid]="address2.invalid && address2.touched"
-              aria-required="true"
               [attr.aria-describedby]="
                 address2.invalid && address2.touched ? 'address2Error' : null
               "
