@@ -61,5 +61,7 @@
   "TRANSACTION_FAILED_REASON": "Cafodd y broses dalu hon ei hatal oherwydd problem.",
   "TRANSACTION_FAILED_CONTACT": "Cysylltwch â ni a byddwn yn gallu eich cynorthwyo cyn gynted â phosibl.",
   "TRANSACTION_SUCCESS_HEADING": "Mae eich taliad wedi cael ei brosesu’n llwyddiannus. Diolch.",
-  "TRANSACTION_SUCCESS_REF": "Cyfeirnod Taliad: "
+  "TRANSACTION_SUCCESS_REF": "Cyfeirnod Taliad: ",
+  "CONTACT_US_MESSAGE_1": "Os hoffech roi cynnig arall ar nodi'r manylion, dilynwch y ddolen hon:",
+  "CONTACT_US_MESSAGE_2": "Os hoffech siarad â'n llinell gymorth talu, ffoniwch : <b>0800 781 6229</b>"
 }

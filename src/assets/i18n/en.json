@@ -55,11 +55,13 @@
   "CONFIRMDETAIL": "Confirm Details",
   "PAYMENTDETAILS": "Payment Details",
   "CONFIRMATION": "Confirmation",
-  "FPNDOESNOTEXIST" : "FPN Number Doesn't exist.",
-  "CONFIRMPAYMENT" : "Payment Confirmation",
+  "FPNDOESNOTEXIST": "FPN Number Doesn't exist.",
+  "CONFIRMPAYMENT": "Payment Confirmation",
   "TRANSACTION_FAILED_HEADING": "We regret that your transaction was not successful for the following reason:",
   "TRANSACTION_FAILED_REASON": "This payment process was taken due to an unknown reason",
   "TRANSACTION_FAILED_CONTACT": "Please contact us and we will be able to assist you further.",
   "TRANSACTION_SUCCESS_HEADING": "Your payment has been processed successfully. Thank you.",
-  "TRANSACTION_SUCCESS_REF": "Payment Ref No: "
+  "TRANSACTION_SUCCESS_REF": "Payment Ref No: ",
+  "CONTACT_US_MESSAGE_1": "If you would like to try entering the details again, please follow this link:",
+  "CONTACT_US_MESSAGE_2": "If you would like to speak with our payment helpline, please call : <b>0800 781 6229</b>"
 }

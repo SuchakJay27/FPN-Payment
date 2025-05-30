@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ModalService } from '../../services/modal.service';
 
 @Component({
@@ -15,15 +15,17 @@ export class FooterComponent {
   //#endregion
 
   //#region Constructor
-  constructor(private _modalService: ModalService) { }
+  constructor(private _modalService: ModalService, private translate: TranslateService) { }
   //#endregion
 
   //#region Private Methods
   contactUs() {
+    let retryLinkMessage = this.translate.instant('CONTACT_US_MESSAGE_1');
+    let helplineMessage = this.translate.instant('CONTACT_US_MESSAGE_2');
     let message = `<div class="pt-4">
-      If you would like to try entering the details again please follow this link: 
+      ${retryLinkMessage} 
       <a href="${window.location.href}" style="color:#3085d6;">${this.council}</a><br/><br/>
-      If you would like to speak with our payment helpline, please call 0800 781 6229.
+       ${helplineMessage} 
       </div>
     `;
     this.showConfirmationPopUp(message);
