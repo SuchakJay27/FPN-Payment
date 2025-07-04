@@ -36,7 +36,7 @@ export class ModalService {
         // Add alt tag to hidden image
         const img = document.querySelector('.swal2-image') as HTMLImageElement;
         if (img && !img.hasAttribute('alt')) {
-          img.setAttribute('alt', 'SweetAlert image');
+          img.setAttribute('alt', '');
         }
 
         // Remove unnecessary/empty input elements
