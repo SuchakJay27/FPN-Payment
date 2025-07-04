@@ -24,7 +24,7 @@ export class FooterComponent {
     let helplineMessage = this.translate.instant('CONTACT_US_MESSAGE_2');
     let message = `<div class="pt-4">
       ${retryLinkMessage} 
-      <a href="${window.location.href}" style="color:#3085d6;">${this.council}</a><br/><br/>
+      <a href="${window.location.href}" style="color: #2b6cb0; font-weight: 600; text-decoration: underline;">${this.council}</a><br/><br/>
        ${helplineMessage} 
       </div>
     `;
